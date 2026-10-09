@@ -6,12 +6,15 @@ function spend(){
     HERO_ORDER.forEach(h=>{if(!s.heroes[h]&&unlockHero(s,h).ok)loop=true;});
     HERO_ORDER.forEach(h=>{if(s.heroes[h])while(starUp(s,h).ok)loop=true;});
     const np=POWER_ORDER.find(p=>!s.powers[p]);
+    {const nw=HERO_ORDER.filter(h=>s.heroes[h]&&heroWeapon(s,h)==='batu').sort((a,b)=>HEROES[b].tier-HEROES[a].tier)[0];if(nw){const cs=WEAPON_ORDER.filter(w=>!s.weapons[w]&&inClass(nw,w)).sort((a,b)=>WEAPONS[a].rar-WEAPONS[b].rar),c=cs.find(w=>canBuyWeapon(w));if(c&&unlockWeapon(s,c).ok){autoArm(s);loop=true;}else if(!c&&cs[0]){if(s.wtarget!==cs[0])setWTarget(s,cs[0]);if(s.gems>=100&&openWChest(s,'emas',rng,battles*6e5).ok){autoArm(s);loop=true;}}}}
+    while(s.wpeti.leg>0||s.wpeti.kayu>0||wFreeKayu(s,battles*6e5)){if(!openWChest(s,s.wpeti.leg>0?'legenda':'kayu',rng,battles*6e5).ok)break;autoArm(s);}
+    Object.keys(s.weapons).forEach(w=>{while(wStarUp(s,w).ok)loop=true;});
     if(s.slots<MAX_SLOTS&&s.team.length>=s.slots&&s.gems>=SLOT_COST[s.slots+1]){buySlot(s);loop=true;}
     else if(np&&s.gems>=POWERS[np].harga+30){unlockPower(s,np);loop=true;}
     else if(s.gems>=80){openHeroChest(s,'hero',rng);loop=true;}
   }
   const own=HERO_ORDER.filter(id=>s.heroes[id]);own.sort((a,b)=>heroStats(s,b,0).dmg*WEAPONS[heroWeapon(s,b)].rate-heroStats(s,a,0).dmg*WEAPONS[heroWeapon(s,a)].rate);s.team=own.slice(0,s.slots);
-  const ws=Object.keys(s.weapons).sort((a,b)=>wscore(b)-wscore(a));s.team.forEach((h,i)=>equipWeapon(s,h,ws[Math.min(i,ws.length-1)]));
+  {const used=new Set();s.heroWpn={};s.team.forEach(h=>{const w=Object.keys(s.weapons).filter(x=>!used.has(x)&&canEquip(h,x)).sort((a,b)=>weaponScore(s,h,b)-weaponScore(s,h,a))[0];if(w){s.heroWpn[h]=w;used.add(w);}});autoArm(s);}
   autoEquipBest(s);sellAllBelow(s,1);
   for(let k=0;k<3000;k++){const opts=[];s.team.forEach(h=>opts.push([upCost(s.heroes[h]),()=>upgradeHero(s,h,1)]));
     [...new Set(s.team.map(h=>heroWeapon(s,h)))].forEach(w=>opts.push([wpnCost(w,s.weapons[w]),()=>upgradeWeapon(s,w,1)]));

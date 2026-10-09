@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Zombi Comel 6</title>
+<title>Zombi Comel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -90,7 +90,7 @@ button:focus-visible{outline:3px solid var(--gem);outline-offset:2px}
 @media (max-width:760px){.scroll{max-height:none}}
 .trainer{margin-top:10px;border-style:dashed}
 .cmp{font-size:.8rem;font-weight:700;margin:2px 0!important}.cmp .up{color:#2E9E6A}.cmp .dn{color:#D9434A}
-.warnbox{background:#FFF4C0;border:2px solid #F2C230;border-radius:10px;padding:6px 10px;font-weight:700}
+.warnbox{background:#FFF4C0;color:#5A4300;border:2px solid #F2C230;border-radius:10px;padding:6px 10px;font-weight:700}
 canvas.graph{width:100%;max-width:220px;height:60px;display:block;margin-top:4px}
 .subtabs{display:flex;gap:4px;margin:0 0 8px}.subtabs[hidden]{display:none}.subtabs button{flex:1;font:800 .85rem "Nunito";padding:6px;border-radius:10px;border:2px solid var(--line);background:transparent;color:var(--soft);cursor:pointer}.subtabs button[aria-selected="true"]{background:var(--go);color:#fff;border-color:var(--go)}
 .subtabs button.badge{background:#F2C230;color:#23324A;border-color:#F2C230}
@@ -100,8 +100,8 @@ canvas.graph{width:100%;max-width:220px;height:60px;display:block;margin-top:4px
 .rchip{display:inline-block;color:#fff;font:800 .7rem "Nunito";padding:0 5px;border-radius:6px;text-shadow:0 1px 1px rgba(0,0,0,.4);vertical-align:2px}
 body.calm .hint{animation:none}body.calm *{scroll-behavior:auto}
 body.bigtext{font-size:17px}body.bigtext .card p{font-size:.95rem}body.bigtext .card h3{font-size:1.15rem}body.bigtext .btn{font-size:1.08rem}
-.cur.ev{background:#FFF4C0;border-color:#F2C230;font-size:.8rem;cursor:pointer}
-.evbox{border-color:#F2C230;background:linear-gradient(90deg,#FFF4C0,var(--card))}
+.cur.ev{background:#FFF4C0;color:#5A4300;border-color:#F2C230;font-size:.8rem;cursor:pointer;max-width:42vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.evbox{border-color:#F2C230;background:#FFF4C0;color:#5A4300}
 .card.tower .types .btn{padding:4px 6px;font-size:.78rem}
 .ctrl .btn{padding:9px 6px}
 #evForce{flex:1;font:700 .9rem "Nunito";padding:6px;border-radius:10px;border:2px solid var(--line);background:var(--chip);color:var(--ink)}
@@ -153,6 +153,15 @@ input[type=range]{width:100%;accent-color:var(--go)}
 .wsel .mini{width:30px;height:30px;flex:none}
 .ico28{width:28px;height:28px;flex:none}
 .wsum{display:flex;gap:10px;align-items:center}.wsum canvas{width:56px;height:56px;flex:none}.wsum p{margin:0}
+.ultn{color:#E0A030}.ultp{border-left:3px solid #FFD24A;padding-left:8px}
+.ultbar{display:flex;justify-content:center;gap:5px;margin:6px auto 0;width:100%}
+.ubtn{position:relative;flex:1 1 0;min-width:0;max-width:50px;aspect-ratio:1/1;padding:0;border:3px solid var(--line);border-radius:50%;background:var(--card);cursor:pointer;overflow:hidden}
+.ubtn canvas{position:relative;width:100%;height:100%;display:block}
+.ubtn .uf{position:absolute;z-index:1;left:0;right:0;bottom:0;height:0;background:var(--uc,#FFD24A);opacity:.38;pointer-events:none;transition:height .15s linear;border-top:2px solid #fff}
+.ubtn .ui{position:absolute;z-index:2;right:-1px;bottom:-2px;font-size:.8rem;line-height:1;pointer-events:none;filter:drop-shadow(0 1px 1px #000)}
+.ubtn.ready{border-color:var(--uc,#FFD24A);box-shadow:0 0 10px var(--uc,#FFD24A);animation:upulse 1s ease-in-out infinite}.ubtn.ready .uf{opacity:0}
+@keyframes upulse{50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.ubtn.ready{animation:none}}
 .powerbar{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:10px auto 0;width:min(100%,calc(66vh * .6 + 40px))}
 .pbtn{position:relative;width:48px;height:48px;padding:0;border:3px solid var(--line);border-radius:14px;background:var(--card);cursor:pointer;overflow:hidden}
 .pbtn canvas{width:42px;height:42px;display:block}
@@ -183,88 +192,404 @@ input[type=range]{width:100%;accent-color:var(--go)}
 .btn.gemb{background:var(--gem)}
 #trGod[aria-pressed="true"]{background:var(--go);color:var(--goInk);border-color:var(--go)}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
+
+/* ===== v7: susun atur skrin penuh ===== */
+[hidden]{display:none!important}
+html,body{height:100%}
+body{overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+#app{position:relative;max-width:480px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg)}
+@media (min-width:620px){body{background:repeating-linear-gradient(45deg,var(--bg) 0 18px,var(--chip) 18px 36px)}#app{box-shadow:0 0 0 2px var(--line),0 10px 40px rgba(0,0,0,.18)}}
+.hud{flex:none;display:flex;align-items:center;gap:6px;padding:6px 10px 4px}
+.hud[hidden]{display:none}
+.hud .brand{font:800 1.1rem "Baloo 2",system-ui;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.hud .cur{padding:2px 8px 2px 4px;font-size:.92rem;border-width:1.5px}
+@media (max-width:360px){.hud .brand{display:none}}
+.hbtn{width:38px;height:38px;flex:none;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:800 1.1rem "Baloo 2",system-ui;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.hbtn[hidden]{display:none}
+#boostChips{padding:0 10px;margin:0}
+#screens{position:relative;flex:1;min-height:0}
+.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 10px 14px}
+.screen[hidden]{display:none}
+#battle{overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:2px 6px 8px}
+#battle .stage{flex:none;margin:0;max-width:100%}
+#battle .powerbar{margin:0;width:100%;flex-wrap:nowrap;gap:4px}
+#battle .pbtn{flex:1 1 0;min-width:0;max-width:50px;width:auto;height:auto;aspect-ratio:1/1}#battle .pbtn canvas{width:100%;height:100%}
+#battle .ctrl{margin:0;width:100%;gap:5px}#battle .ctrl .btn{padding:8px 4px;font-size:.92rem}
+.bstage{font:800 .95rem "Baloo 2",system-ui;color:var(--soft);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#pageView{z-index:5;background:var(--bg);padding:0 10px 18px}
+.pagehead{position:sticky;top:0;z-index:3;background:var(--bg);display:flex;align-items:center;gap:8px;padding:8px 0 6px}
+.pagehead b{font:800 1.25rem "Baloo 2",system-ui;flex:1}
+.pagechips{display:flex;gap:6px;overflow-x:auto;padding:0 0 8px;position:sticky;top:52px;z-index:3;background:var(--bg);scrollbar-width:none}
+.pagechips button{flex:none;font:800 .85rem "Nunito",system-ui;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--soft);cursor:pointer}
+.pagechips button[hidden]{display:none}
+.pagechips button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.page .scroll{max-height:none!important;overflow:visible!important}
+.tabs,.subtabs{display:none!important}
+#nav{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:2px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+#nav[hidden]{display:none}
+#nav button{position:relative;background:none;border:0;color:var(--soft);font:800 .74rem "Nunito",system-ui;padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer}
+#nav .ni{font-size:1.35rem;line-height:1.1}
+#nav button[aria-current="true"]{color:var(--go)}
+#nav button.dot::after{content:"";position:absolute;top:4px;right:calc(50% - 20px);width:10px;height:10px;border-radius:50%;background:#E5484D;border:2px solid var(--card)}
+.hubrow{display:flex;gap:6px;margin:2px 0 8px}.hubrow .btn{flex:1;padding:8px 4px;font-size:.86rem}
+.cards{display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;align-items:center;margin:4px 0}
+.scard{position:relative;border-radius:16px;overflow:hidden;border:3px solid var(--line);background:var(--card)}
+.scard canvas{display:block;width:100%;height:auto;aspect-ratio:3/4}
+.scard.cur{border-color:var(--ink);box-shadow:0 4px 0 var(--ink)}
+.scard.side{opacity:.8;cursor:pointer}
+.scard .sn{position:absolute;left:0;right:0;bottom:0;padding:3px 4px;background:rgba(20,26,36,.62);color:#fff;font:800 .74rem "Baloo 2",system-ui;text-align:center}
+.scard .lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(20,26,36,.5);color:#fff;font-size:1.6rem}
+.scard .lock[hidden],.scard .boss[hidden]{display:none}
+.scard .boss{position:absolute;top:6px;left:50%;transform:translateX(-50%);background:rgba(110,80,170,.92);color:#fff;font:800 .72rem "Nunito",system-ui;padding:3px 10px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:92%;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+#hub .stagebar{margin:8px 0 4px}
+.hubteam{display:flex;justify-content:center;gap:4px;margin:6px 0 8px;min-height:52px}.hubteam canvas{width:52px;height:52px}
+#hubStart{font-size:1.45rem;padding:14px;margin:4px 0 6px}
+.tut{position:absolute;left:10px;right:10px;bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:30;margin:0!important;width:auto!important}
+#titleScreen{position:fixed;inset:0;z-index:40;overflow:hidden;background:var(--bg)}
+#titleScreen[hidden]{display:none}
+#titleCv{position:absolute;inset:0;width:100%;height:100%}
+.tmenu{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(16px + env(safe-area-inset-bottom,0px));max-width:420px;margin:0 auto;box-sizing:border-box}
+.tlogo{text-align:center;margin-top:3vh}
+.tlogo canvas{width:110px;height:110px;display:block;margin:0 auto -6px}
+.tlogo h1{font:800 clamp(2.4rem,11vw,3.4rem)/1 "Baloo 2",system-ui;color:#fff;-webkit-text-stroke:2px #23324A;paint-order:stroke fill;text-shadow:0 5px 0 #23324A;margin:0}
+.tlogo p{margin:8px 0 0;color:#fff;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.tbtns{width:100%;display:flex;flex-direction:column;gap:9px;background:rgba(20,26,36,.5);padding:14px;border-radius:20px;box-sizing:border-box}
+.tbtns .btn{width:100%;font-size:1.1rem;padding:11px;justify-content:center}
+.tbtns .btn.ghost{background:var(--card);color:var(--ink)}
+.tbtns .btn[hidden]{display:none}
+.tbtns #tContinue{font-size:1.35rem;padding:14px}
+.trow{display:flex;gap:8px}.trow .btn{flex:1}
+.tfoot{color:#fff;font-weight:800;font-size:.8rem;text-shadow:0 1px 3px #000;text-align:center;margin:8px 0 0}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(20,26,36,.66);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal[hidden]{display:none}
+.mbox{background:var(--card);border:3px solid var(--ink);border-radius:20px;padding:16px;max-width:420px;width:100%;max-height:86vh;overflow:auto;box-sizing:border-box}
+.mbox h2{font:800 1.4rem "Baloo 2",system-ui;margin:0 0 8px}
+.mbody{font-size:.92rem}.mbody ul{padding-left:1.1rem;margin:0}.mbody li{margin:0 0 7px}
+#mBtns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+#splash{position:fixed;inset:0;z-index:80;background:#2E9E6A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff;transition:opacity .45s}
+#splash b{font:800 2rem "Baloo 2",system-ui}#splash small{font-weight:800;opacity:.85}
+#splash canvas{width:110px;height:110px}
+#splash.out{opacity:0;pointer-events:none}
+#heroList{display:none!important}
+#heroList.open{display:block!important;position:fixed;inset:0;z-index:55;background:rgba(20,26,36,.66);overflow-y:auto;padding:calc(56px + env(safe-area-inset-top,0px)) 10px 24px}
+#heroList .card.hero{display:none}#heroList .card.hero.sel{display:flex;max-width:460px;margin:0 auto;flex-wrap:wrap}
+#heroList .card.hero.sel .acts{flex-direction:row;flex-wrap:wrap;width:100%;min-width:0}#heroList .card.hero.sel .acts .btn{flex:1 1 30%}
+#heroList .moreBox{flex-direction:row;flex-wrap:wrap;width:100%}#heroList .moreBox .btn,#heroList .moreBox .row2{flex:1 1 45%}
+#heroClose{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(10px,calc(50% - 230px));z-index:56}
+.hgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:6px}
+@media (min-width:430px){.hgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.htile{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px 6px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font:inherit;min-width:0}
+.htile.team{border-color:var(--go)}.htile.locked .hp{filter:grayscale(1) brightness(.85)}
+.htile.can::after{content:"";position:absolute;top:5px;right:5px;width:10px;height:10px;border-radius:50%;background:#E5484D;border:2px solid var(--card)}
+.htile .hp{width:64px;height:64px}
+.htile .tb{position:absolute;top:4px;left:4px;color:#fff;font:800 .62rem "Nunito",system-ui;padding:0 5px;border-radius:999px;text-shadow:0 1px 1px rgba(0,0,0,.4)}
+.htile .ti{position:absolute;top:4px;right:4px;background:var(--go);color:#fff;font:800 .62rem "Nunito",system-ui;padding:0 5px;border-radius:999px}
+.htile .hn{font:800 .8rem/1.1 "Baloo 2",system-ui;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.htile .hl{font:700 .7rem "Nunito",system-ui;color:var(--soft)}
+.htile .heq{display:flex;gap:3px;justify-content:center;margin-top:2px}
+.htile .heq canvas{width:22px;height:22px}
+.htile .ei{width:22px;height:22px;border-radius:6px;border:1.5px dashed var(--line);font:800 .58rem/19px "Nunito",system-ui;color:#fff;text-align:center;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+.htile .ei.on{border-style:solid;border-color:rgba(0,0,0,.25)}
+.htile .hsh{width:90%;height:6px;border-radius:999px;background:var(--chip);overflow:hidden;margin-top:2px}.htile .hsh i{display:block;height:100%;background:linear-gradient(90deg,#A066E8,#5AC8FF)}
+#invList{display:none!important}
+#invList.open{display:block!important;position:fixed;inset:0;z-index:55;background:rgba(20,26,36,.66);overflow-y:auto;padding:calc(56px + env(safe-area-inset-top,0px)) 10px 24px}
+#invList .card.item{display:none}#invList .card.item.sel{display:flex;max-width:460px;margin:0 auto;flex-wrap:wrap}
+#invClose{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(10px,calc(50% - 230px));z-index:56}
+.igrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+@media (min-width:430px){.igrid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.igrid .empty{grid-column:1/-1}
+.itile{position:relative;display:flex;flex-direction:column;align-items:center;padding:6px 3px 5px;border-radius:12px;border:2.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font:inherit;min-width:0}
+.itile .ig{width:40px;height:40px}
+.itile .it{position:absolute;top:3px;left:4px;font:800 .62rem "Nunito",system-ui;color:var(--soft)}
+.itile .il{position:absolute;top:3px;right:4px;font:800 .62rem "Nunito",system-ui;color:var(--soft)}
+.itile .ik{position:absolute;bottom:20px;left:3px;font-size:.7rem}
+.itile .iw{position:absolute;bottom:20px;right:3px;background:var(--go);color:#fff;font:800 .58rem "Nunito",system-ui;padding:0 4px;border-radius:999px}
+.itile .in{font:800 .64rem/1.15 "Nunito",system-ui;text-align:center;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-top:2px}
+.fortbox{position:relative;border-radius:18px;overflow:hidden;border:3px solid var(--ink);margin-bottom:10px}
+#fortCv{display:block;width:100%;height:auto;aspect-ratio:2/1;cursor:pointer}
+.fstats{display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;padding:6px 10px;background:var(--card);font-size:.8rem;border-top:2px solid var(--line)}
+.brrow{margin-top:4px}.brrow .brh{margin:4px 0 3px!important;font-weight:800;font-size:.82rem}.brchip{display:inline-block;background:#F2C230;color:#5A4300;font:800 .72rem "Nunito",system-ui;padding:1px 8px;border-radius:999px;margin:0 4px 3px 0}
+.brb{display:flex;flex-direction:column;align-items:flex-start;width:100%;margin:0 0 5px;padding:6px 10px;text-align:left}.brb small{font-weight:700;color:var(--soft)}
+.card.tower.flash{box-shadow:0 0 0 3px #F2C230}
+#wallList{display:flex!important;flex-direction:row;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;padding-bottom:6px}
+#wallList .card{flex:none;width:170px;flex-direction:column;align-items:flex-start;scroll-snap-align:start;margin:0}
+#wallList .card .btn{width:100%}
+#wallNextBtn{margin:0 0 8px}
+.kchips{display:flex;gap:6px;overflow-x:auto;margin:0 0 8px;scrollbar-width:none}.kchips button{flex:none;font:800 .85rem "Nunito",system-ui;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--soft);cursor:pointer}.kchips button[aria-selected="true"]{background:var(--go);color:#fff;border-color:var(--go)}
+.hinfo{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 8px}.hinfo button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 10px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-align:left;font:inherit;min-width:0}.hinfo b{font:800 .86rem "Nunito",system-ui;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.hinfo small{font-weight:700;font-size:.72rem;color:var(--soft)}
+.qpanel{position:absolute;left:8px;right:8px;bottom:58px;z-index:20;background:var(--card);border:3px solid var(--ink);border-radius:18px;padding:10px;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.qhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.qhead b{font:800 1.05rem "Baloo 2",system-ui}
+.qrow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1.5px dashed var(--line)}.qrow span{flex:1;font-weight:800;font-size:.88rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.qrow .btn{padding:6px 10px;font-size:.85rem}
+#battle{position:absolute}
+#heroClose,#invClose{position:fixed!important;left:50%;right:auto!important;top:auto!important;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));width:auto;padding:0 24px;height:46px;z-index:57;background:var(--ink);color:var(--bg);border-color:var(--ink);font-size:1rem}
+#heroList.open,#invList.open{padding-bottom:90px!important}
+#heroList .more{display:none!important}
+.htile.can::after{top:26px!important}
+.htile .ex{display:grid;grid-template-columns:repeat(3,9px);gap:2px}.htile .ex i{width:9px;height:9px;border-radius:2px;border:1px dashed var(--line);box-sizing:border-box}.htile .ex i.on{border:1px solid rgba(0,0,0,.25)}
+.doll{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px;width:100%;margin:0 0 10px;align-items:center}
+.dcol{display:flex;flex-direction:column;gap:6px}
+.dslot{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 3px;border-radius:12px;border:2px dashed var(--line);background:var(--card);color:var(--ink);cursor:pointer;font:inherit;min-width:0}
+.dslot.on{border-style:solid;border-width:2.5px}.dslot .dg{width:30px;height:30px}.dslot b{font:800 .66rem/1.1 "Nunito",system-ui;text-align:center}.dslot small{font:700 .62rem "Nunito",system-ui;color:var(--soft)}
+.dmid{display:flex;flex-direction:column;align-items:center}.dpor{width:100%;max-width:150px;aspect-ratio:1/1;height:auto}
+.dset{margin:2px 0 0!important;font:800 .72rem "Nunito",system-ui;color:var(--soft);text-align:center}.dset.on{color:#2E9E6A}
+#heroList .card.hero.sel .pcol{display:none}
+.filters{overflow-x:auto;flex-wrap:nowrap!important;scrollbar-width:none}.filters button{flex:none}
+.rtg{margin-top:6px;padding:4px 10px!important;font-size:.8rem!important}
+.rbox{width:100%;margin-top:6px}
+.rates{display:flex;flex-wrap:wrap;gap:4px}.rates span{display:inline-flex;align-items:center;gap:4px;border:2px solid var(--rc);border-radius:999px;padding:1px 8px;font-size:.74rem;font-weight:700}.rates span b{color:var(--rc)}.rates span i{font-style:normal;font-weight:800}
+.rnote{font-size:.76rem;margin:4px 0 0!important}
+.pity{font:800 .78rem "Nunito",system-ui;color:#A066E8;margin:2px 0 0!important}
+.card.shop{flex-wrap:wrap}
+.tscroll{overflow-x:auto;margin:6px 0}.rtab table{border-collapse:collapse;font-size:.72rem;white-space:nowrap}.rtab th,.rtab td{padding:3px 6px;border-bottom:1px solid var(--line);text-align:right}.rtab th:first-child,.rtab td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}
+#chestFx{position:fixed;inset:0;z-index:58;background:radial-gradient(circle at 50% 30%,#2A3550,#0E131C 75%);overflow-y:auto}
+.cfxin{max-width:460px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px}
+.cfxin h2{color:#fff;font:800 1.4rem "Baloo 2",system-ui;margin:0}
+#cfxCv{width:100%;max-width:400px;height:auto;aspect-ratio:720/520;cursor:pointer}
+#cfxCards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
+@media (min-width:420px){#cfxCards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cfxc{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px;border-radius:14px;border:3px solid var(--rc);background:linear-gradient(180deg,color-mix(in srgb,var(--rc) 30%,#1E2633),#1E2633);color:#fff;text-align:center;animation:cfxIn .35s ease-out both}
+.cfxc.hi{box-shadow:0 0 18px var(--rc)}
+.cfxc canvas{width:52px;height:52px}.cfxc b{font:800 .8rem "Nunito",system-ui;color:var(--rc)}.cfxc span{font:800 .78rem/1.15 "Baloo 2",system-ui}.cfxc small{font-size:.66rem;color:#C8D4E4}.cfxc em{font-style:normal;font:800 .72rem "Nunito",system-ui;color:#FFE07A}
+.cfxc .sbar{width:100%;height:12px}.cfxc .sbar span{font-size:.6rem}
+@keyframes cfxIn{from{transform:scale(.6) rotateY(90deg);opacity:0}to{transform:none;opacity:1}}
+body.calm .cfxc{animation:none}
+#cfxBtns{display:flex;gap:6px;width:100%}#cfxBtns .btn{flex:1}
+#cfxSkip{align-self:flex-end;padding:4px 12px;font-size:.85rem}
+.pgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 8px}
+.ptile{position:relative;display:flex;flex-direction:column;align-items:center;padding:5px 2px;border-radius:12px;border:2.5px solid var(--line);color:var(--ink);cursor:pointer;font:inherit;min-width:0}
+.ptile.sel{box-shadow:0 0 0 3px #F2C230}.ptile.cur{cursor:default;opacity:.85}
+.ptile .pg canvas{width:34px;height:34px;display:block}.ptile b{font:800 .64rem "Nunito",system-ui}
+.ptile em{position:absolute;top:2px;right:4px;font-style:normal;font-weight:800;font-size:.8rem}.ptile em.up{color:#2E9E6A}.ptile em.dn{color:#D9434A}
+.ptile u{position:absolute;top:2px;left:4px;text-decoration:none;font-size:.55rem;color:#A066E8}
+.ptile s{text-decoration:none;font:800 .55rem "Nunito",system-ui;color:var(--soft);max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.psort{display:flex;gap:5px;margin:0 0 6px}.psort button{font:800 .74rem "Nunito",system-ui;padding:3px 10px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--soft);cursor:pointer}.psort button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pcmp{border-top:2px dashed var(--line);padding-top:6px;display:flex;flex-direction:column;gap:2px}.pcmp small{color:var(--soft);font-size:.74rem}.pcmp p{margin:2px 0 0!important;font-weight:800;font-size:.8rem}.pcmp .up{color:#2E9E6A}.pcmp .dn{color:#D9434A}
+.stpanel{grid-column:1/-1;margin-top:4px}
+.cp{font:800 1rem "Baloo 2",system-ui;text-align:center;margin:0 0 6px}.cp b{color:#F2C230;font-size:1.2rem}
+.stgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.strow{display:flex;justify-content:space-between;align-items:center;padding:5px 9px;border-radius:10px;border:1.5px solid var(--line);background:var(--chip);color:var(--ink);font:700 .76rem "Nunito",system-ui;cursor:pointer;min-width:0}.strow b{font-weight:800}
+.skrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:8px}.skrow>b{font:800 .82rem "Nunito",system-ui;margin-right:2px}
+.skb{font:800 .74rem "Nunito",system-ui;padding:4px 10px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}.skb.on{background:#C8508A;border-color:#C8508A;color:#fff}.skb.lock{opacity:.55}
+.htile .hcp{font:800 .64rem "Nunito",system-ui;color:#C8A020}
+.itile .iu{position:absolute;top:18px;right:4px;color:#2E9E6A;font-weight:800;font-size:.8rem}
+.bkrow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1.5px dashed var(--line)}.bkrow span{flex:1;font-weight:700;font-size:.82rem;display:flex;flex-direction:column}.bkrow small{color:var(--soft);font-size:.7rem}.bkrow .btn{padding:5px 10px;font-size:.8rem}
+#trJenis,#trRar{flex:1;font:700 .85rem "Nunito";padding:6px;border-radius:10px;border:2px solid var(--line);background:var(--chip);color:var(--ink);min-width:0}
+#heroSheet{position:fixed;inset:0;z-index:56;background:rgba(20,26,36,.7);overflow-y:auto}
+.hsx{max-width:460px;margin:0 auto;background:var(--bg);min-height:100%;padding:0 12px calc(24px + env(safe-area-inset-bottom,0px));box-sizing:border-box;display:flex;flex-direction:column;gap:8px}
+.hshead{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top,0px)) 0 8px;border-bottom:2px solid var(--line)}
+#hsPor{width:80px;height:80px;border-radius:16px;background:var(--card);border:2px solid var(--line);flex:none}
+.hsinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.hsinfo b#hsName{font:800 1.25rem/1.1 "Baloo 2",system-ui}#hsMeta{font-weight:700;font-size:.82rem;color:var(--soft)}#hsStars{font-size:.8rem}#hsCp{font:800 .9rem "Nunito",system-ui;color:#C8A020}
+.hsnav{display:flex;flex-direction:column;align-items:flex-end;gap:6px}.hsnav div{display:flex;gap:4px}.hsnav .hbtn{width:36px;height:34px}
+.hsact{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:6px}.hsact .btn{padding:10px 4px}
+#hsStar{margin:0}
+.hsgear{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.gs{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 2px;border-radius:12px;border:2px dashed var(--line);background:var(--card);color:var(--ink);cursor:pointer;font:inherit;min-width:0}.gs.on{border-style:solid;border-width:2.5px}.gs canvas{width:34px;height:34px}.gs small{font:800 .58rem "Nunito",system-ui;color:var(--soft);white-space:nowrap}
+.hsset{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0!important;font-size:.72rem;font-weight:800}.hsset span{padding:1px 8px;border-radius:999px;background:var(--chip);color:var(--soft)}.hsset span.ok{background:#2E9E6A;color:#fff}.hsset em{flex-basis:100%;font-style:normal;color:#2E9E6A}
+#hsBest{margin:0}
+.hstabs{display:flex;gap:5px}.hstabs button{flex:1;font:800 .85rem "Nunito",system-ui;padding:7px 4px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--soft);cursor:pointer}.hstabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#hsBody{min-height:120px}#hsBody p{margin:6px 0}#hsBody select{width:100%;font:700 .95rem "Nunito";padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--chip);color:var(--ink);margin:4px 0}
+.skgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.skc{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;border-radius:14px;border:2px solid var(--line);background:var(--card);text-align:center;min-width:0}.skc.on{border-color:#C8508A}.skc.lock canvas{filter:saturate(.75)}.skc canvas{width:64px;height:64px}.skc b{font:800 .74rem "Nunito",system-ui}.skc small{font-size:.62rem;color:var(--soft)}.skc .btn{width:100%;padding:5px 4px;font-size:.76rem}
+.hsmisc{display:grid;grid-template-columns:1.4fr .6fr .6fr 1.3fr;gap:5px}.hsmisc .btn{padding:8px 4px;font-size:.82rem}
+.toast{top:calc(62px + env(safe-area-inset-top,0px))!important;bottom:auto!important;transform:translate(-50%,-30px)!important;z-index:100!important;max-width:min(92vw,420px);text-align:center;border-radius:16px;line-height:1.3;font-size:.92rem;padding:8px 14px;box-shadow:0 4px 14px rgba(0,0,0,.25)}.toast.show{transform:translate(-50%,0)!important}
+.hubbk{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:.84rem}.hubbk .btn{flex:none;padding:6px 10px;font-size:.8rem}
+.card.expc .acts{display:flex;flex-direction:column;gap:5px}
+/* v7.6 */
+.bstage.chal{color:#fff;background:#E07A2E;border-radius:999px;padding:2px 12px}
+.card.expc{flex-wrap:wrap}.card.expc .exsc{width:100%;height:auto;aspect-ratio:640/170;border-radius:12px;margin-bottom:6px;display:block}
+.exlog{list-style:none;padding:0;margin:4px 0!important;font-size:.76rem;color:var(--soft)}.exlog li{padding:1px 0}.exlog b{color:var(--ink);margin-right:4px}
+.exdest{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 6px}.exdest button{display:flex;flex-direction:column;align-items:flex-start;padding:7px 9px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-align:left;font:inherit}.exdest button.on{border-color:#2E9E6A;box-shadow:0 0 0 2px #2E9E6A}.exdest b{font:800 .82rem "Nunito",system-ui}.exdest small{font-size:.7rem;color:var(--soft)}
+#wpnList .card.wpn canvas.ico{cursor:pointer}.scev{display:flex;gap:6px;margin:8px 0 4px;flex-wrap:wrap}.scev .sce{flex:1 1 70px;padding:6px 4px;font-size:.8rem;display:flex;flex-direction:column;align-items:center}.scev .sce small{font-size:.68rem;opacity:.75}.scev .sce.on{border-color:var(--go);background:rgba(61,190,130,.18)}.scst{font-weight:800;margin:6px 0 2px}
+#raidBox .raidtop{display:flex;gap:10px;align-items:center}#raidBox .raidtop canvas{width:56px;height:56px;flex:none}#raidBox .raidtop div{display:flex;flex-direction:column;gap:2px}#raidBox small{opacity:.8;font-size:.78rem}
+.raidrow{display:flex;gap:4px;margin:8px 0}.raidrow .rd{flex:1;text-align:center;border:2px solid var(--line);border-radius:8px;padding:3px 0;font-weight:800;font-size:.8rem}.raidrow .rd.ok{background:var(--go);border-color:var(--go);color:#0E1A14}.raidrow .rd.now{border-color:#F2C230;box-shadow:0 0 0 2px rgba(242,194,48,.35)}
+.bxgrid{display:grid;grid-template-columns:22px repeat(4,1fr);gap:3px;margin-top:6px;max-width:220px}.bxgrid .bxh{font-size:.72rem;text-align:center;opacity:.85}.bxgrid .bx{text-align:center;border-radius:6px;font-size:.72rem;font-weight:800;padding:2px 0;background:rgba(255,255,255,.06);border:1.5px solid var(--line)}.bxgrid .bx.s1{border-color:var(--bc);opacity:.75}.bxgrid .bx.s2{background:var(--bc);border-color:var(--bc);color:#141A26}
+.bxbar{height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin:6px 0}.bxbar span{display:block;height:100%;background:linear-gradient(90deg,#F2C230,#FF8A3A)}
+.wtg{display:inline-block;font-size:.68rem;font-weight:800;padding:1px 7px;border-radius:99px;margin:0 4px 2px 0;border:1.5px solid var(--line)}.wtg.f{background:rgba(242,194,48,.16);border-color:#C8963A}.wtg.m{background:rgba(180,140,255,.18);border-color:#9A6AE0}.wtg.u{background:rgba(90,200,255,.16);border-color:#4A9AD0}.wtg.d{background:rgba(150,110,70,.18);border-color:#9A7048}
+.btips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 6px}.btip{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0;background:var(--card,#223044);border:2px solid #8A6CE0;border-radius:12px;padding:4px 10px;max-width:100%;text-align:left}.btip b{font:800 .86rem "Nunito",system-ui;white-space:nowrap}.btip i{font-style:normal;font-size:.76rem;color:#3FC489;font-weight:700}.btip.warn{border-color:#E0A030}.btip.warn i{color:#E8B04A}.btips .btn{padding:6px 12px;font-size:.82rem}
+.wdust p{margin:2px 0}.btip.el{border-color:#3FC489}.trl.le{color:#FF7066;background:rgba(255,112,102,.12)}.trl.o{color:#9CA9BA;background:rgba(156,169,186,.12)}.wel .ku,.elmx .ku{color:#3FC489}.wel .le,.elmx .le{color:#FF7066}.wel b{font-weight:800}.elscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:6px 0}.elmx{border-collapse:collapse;font-size:.72rem;font-variant-numeric:tabular-nums}.elmx th,.elmx td{padding:4px 5px;text-align:center;border-bottom:1px solid rgba(140,160,190,.2);white-space:nowrap}.elmx thead th{font-size:.95rem}.elmx th small{display:block;font-size:.58rem;font-weight:700;opacity:.75}.elmx tbody th{text-align:left;position:sticky;left:0;background:var(--card,#1E2836);font-size:.74rem}.elmx td{font-weight:800}.elmx .o{opacity:.35}.trgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:6px 0}.trk{border:2px solid rgba(140,160,190,.28);border-radius:12px;padding:7px 9px;display:flex;flex-direction:column;gap:3px;min-width:0}.trh{display:flex;align-items:center;gap:6px}.tri{font-size:1.25rem;line-height:1}.trh b{font:800 .88rem "Nunito",system-ui;line-height:1.15}.trk p{margin:0;font-size:.78rem;line-height:1.35}.trl{align-self:flex-start;font-size:.72rem;font-weight:800;color:#3FC489;background:rgba(63,196,137,.12);border-radius:8px;padding:2px 7px}.card.wpn{flex-wrap:wrap}.card.wpn .wfull{flex:1 1 100%;min-width:0;padding:0 2px}.wbar span{white-space:nowrap}.wbars{display:flex;flex-direction:column;gap:3px;margin:4px 0}.wbar{display:grid;grid-template-columns:5.6em 1fr auto 3.4em;align-items:center;gap:6px;font-size:.76rem;font-weight:700}.wbar .tr{display:block;position:relative;text-align:left;width:100%;height:8px;border-radius:99px;background:rgba(140,160,190,.22);overflow:hidden;min-width:40px}.wbar .fl{display:block;height:100%;border-radius:99px;margin:0 !important;position:static}.wbar b{font-variant-numeric:tabular-nums;font-size:.76rem;text-align:right;min-width:3.4em}.wbar em{font-style:normal;font-size:.7rem;font-weight:800}.wbar em.up{color:#3FC489}.wbar em.dn{color:#FF7066}.wbars small{font-size:.68rem}.cmpgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cmpcol{display:flex;flex-direction:column;gap:3px;min-width:0}.cmpcol canvas{width:64px;height:64px;align-self:center}.cmpcol>b{font:800 .9rem "Baloo 2",system-ui;text-align:center}.cmpcol>small{font-size:.7rem;text-align:center;color:var(--soft,#9CA9BA)}.cmpcol .wbar{grid-template-columns:auto 1fr auto;font-size:.72rem}.cmpcol .wbar.win b{color:#3FC489}#wpnFilt2 select{font:700 .82rem "Nunito",system-ui;padding:4px 8px;border-radius:999px;border:2px solid var(--line,#3A4658);background:transparent;color:inherit;max-width:48%}.wpk{font-size:.74rem;color:#E8B04A;margin:2px 0}.wjsel{display:block;font-size:.82rem;font-weight:700;margin:4px 0}.wjsel select{font:700 .85rem "Nunito",system-ui;padding:3px 6px;border-radius:8px;max-width:100%}.wso{border-left:4px solid var(--rc)}.wso .wtg{font-size:.68rem}.card.shop .acts{display:flex;flex-direction:column;gap:4px;flex:0 0 auto;max-width:8.6rem}.card.shop .acts .btn,.wso .buy{white-space:normal;max-width:8.6rem}.wsec{font:800 1.05rem "Baloo 2",system-ui}.wsec small{font:700 .78rem "Nunito",system-ui}.wst{color:#F2C230;letter-spacing:1px}.wshb{margin:2px 0}.card.wpn .row2.ws .btn{font-size:.78rem}.affb{font-weight:800;font-size:.8rem}.aff_pakar{color:#E8B04A}.aff_kelas{color:#3FC489}.aff_luar{color:#FF7066}.card.hero .kp{margin:2px 0}#hsKp{margin:4px 0 2px;display:flex;flex-wrap:wrap;gap:4px}.card.hero.nowpn{border-color:#E0A030}.warnw{color:#E0A030}.wcls{font-size:.72rem;margin:2px 0 0}
+#hudBrand{cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.card.wall .wtr,#mBody .wtr{font-size:.74rem;line-height:1.25;margin:3px 0 0;opacity:.85}.card.wall .wtr b,#mBody .wtr b{color:var(--ink)}#mBody .wtr{font-size:.86rem}
+.card.wall .lvb{margin-top:6px;font-size:.8rem;padding:6px 4px}.wtr2{display:block;font-size:.8rem;line-height:1.3}
+.pbtn.wsk{border-color:#C98B4E}.pbtn.wsk.ready{box-shadow:0 0 0 2px #FFE07A}
+#wallSum{display:flex;flex-direction:column;gap:4px}.wsn{font:800 1.05rem "Baloo 2",system-ui}.wchips{display:flex;flex-wrap:wrap;gap:4px}.wchips span{background:var(--chip);border:1.5px solid var(--line);border-radius:999px;padding:2px 9px;font-weight:800;font-size:.78rem}
+.wgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:8px 0}
+.wsock{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;border-radius:14px;border:2.5px dashed var(--line);background:var(--card);color:var(--ink);cursor:pointer;font:inherit;min-width:0}.wsock.on{border-style:solid}.wsock canvas{width:40px;height:40px}.wsock b{font:800 .74rem "Nunito",system-ui}.wsock small{font-size:.62rem;color:var(--soft);text-align:center}
+#wallBestBtn{margin:0 0 4px}
+/* animasi antara muka */
+#pageView:not([hidden]),#heroSheet:not([hidden]) .hsx{animation:zcSlide .22s ease-out}
+@keyframes zcSlide{from{transform:translateY(18px);opacity:.4}to{transform:none;opacity:1}}
+.btn:active,.hbtn:active,.htile:active,.itile:active,.gs:active,.wsock:active{transform:scale(.95)}
+.htile.lvup{animation:zcLv .7s ease-out}@keyframes zcLv{0%{box-shadow:0 0 0 0 rgba(242,194,48,.9)}60%{box-shadow:0 0 0 10px rgba(242,194,48,0)}100%{box-shadow:none}}
+.cur.bump{animation:zcBump .25s ease-out}@keyframes zcBump{50%{transform:scale(1.15)}}
+body.calm #pageView:not([hidden]),body.calm #heroSheet .hsx,body.calm .htile.lvup,body.calm .cur.bump{animation:none}
+/* v7.8 dompet */
+.cur.buy{cursor:pointer;position:relative}.cur .plus{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-left:4px;border-radius:50%;background:#2E9E6A;color:#fff;font:800 .8rem/1 "Nunito",system-ui}
+.cur.buy.dot::after{content:"";position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:#E5484D;border:2px solid var(--bg)}
+.wh{margin:10px 0 5px;font:800 .9rem "Nunito",system-ui}
+.wpacks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.wpack{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:14px;border:2px solid #F2C230;background:linear-gradient(180deg,#F2C23030,var(--card));color:var(--ink);cursor:pointer;font:inherit;min-width:0}.wpack:disabled{opacity:.5;cursor:default}.wpack b{font:800 .74rem "Nunito",system-ui}.wpack span{font:800 .86rem "Baloo 2",system-ui;display:flex;align-items:center;gap:2px}.wpack small{font-size:.62rem;color:var(--soft);text-align:center}.wpack em{font-style:normal;font-weight:800;font-size:.8rem;color:#A066E8;display:flex;align-items:center;gap:2px}
+.wsrc{display:grid;grid-template-columns:1fr 1fr;gap:5px}.wsrc button{padding:7px 6px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:800 .76rem "Nunito",system-ui;cursor:pointer;text-align:left}
+.walletCard{border-color:#F2C230!important}
+/* v8.0 pembelian */
+.card.iapc.sup{border-color:#E5486A!important;background:linear-gradient(180deg,#E5486A18,var(--card))}
+.iapnote{font-size:.76rem;margin:8px 0!important}
+.gateq{font:800 1.8rem "Baloo 2",system-ui;text-align:center;margin:6px 0!important}
+.gatein{width:100%;box-sizing:border-box;font:800 1.4rem "Nunito",system-ui;text-align:center;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--chip);color:var(--ink)}
+.supb{margin-left:4px;color:#E5486A;font-size:1rem}
+/* v8.1 */
+.sndgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px}.sndb{padding:8px 8px;border-radius:12px;border:2px solid var(--line);background:var(--chip);color:var(--ink);font:800 .78rem "Nunito",system-ui;cursor:pointer;text-align:left}.sndb:active{transform:scale(.95);background:#2E9E6A;color:#fff}
+.modal:not([hidden]) .mbox{animation:zcPop .26s cubic-bezier(.2,1.5,.4,1)}@keyframes zcPop{from{transform:scale(.82);opacity:0}to{transform:none;opacity:1}}
+.itile.shine{overflow:hidden}.itile.shine::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);transform:translateX(-120%);animation:zcShine 2.8s ease-in-out infinite;pointer-events:none}
+@keyframes zcShine{0%,55%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
+body.calm .modal .mbox,body.calm .itile.shine::after{animation:none}
+/* v8.2 slider kelantangan: tiada padding/sempadan kotak teks; satu baris setiap slider */
+.vols{display:flex;flex-direction:column;gap:4px;margin:0 0 10px}
+.vol{display:flex;flex-direction:column;font-weight:800;font-size:.86rem;color:var(--soft)}.vol span{display:flex;justify-content:space-between;align-items:center}.vol b{color:var(--ink);min-width:3.2em;text-align:right}
+.vol input[type=range],.trrow input[type=range]{width:100%;box-sizing:border-box;padding:0!important;margin:2px 0;border:0!important;background:none!important;height:36px;touch-action:pan-y}
+/* v8.4 mod kesukaran */
+.mgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;width:100%}
+.mcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 2px 6px;border-radius:14px;border:2.5px solid var(--mc);background:linear-gradient(180deg,color-mix(in srgb,var(--mc) 28%,var(--card)),var(--card));color:var(--ink);cursor:pointer;font:inherit;min-width:0}
+.mcard .mi{font-size:1.45rem;line-height:1.1}.mcard b{font:800 .72rem/1.1 "Nunito",system-ui;text-align:center}.mcard small{font:700 .56rem/1.15 "Nunito",system-ui;color:var(--soft);text-align:center}
+.mcard em{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font:800 .52rem "Nunito",system-ui;font-style:normal;background:var(--mc);color:#fff;border-radius:999px;padding:1px 6px;white-space:nowrap}
+.mcard.on{box-shadow:0 0 0 2px var(--mc),0 0 12px color-mix(in srgb,var(--mc) 60%,transparent)}.mcard.lock{filter:grayscale(.85);opacity:.6}
+.tbtns .mgrid{margin:4px 0 2px}
+#mPick{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}#mPick .mcard{padding:10px 4px}#mPick .mcard .mi{font-size:1.8rem}#mPick .mcard b{font-size:.85rem}#mPick .mcard small{font-size:.66rem}
+.mtab p{margin:3px 0!important;font-size:.78rem}
+.mchip{display:block;margin:0 auto 6px;padding:4px 14px;border-radius:999px;border:2px solid var(--mc,#4CAF7A);background:color-mix(in srgb,var(--mc,#4CAF7A) 22%,var(--card));color:var(--ink);font:800 .85rem "Nunito",system-ui;cursor:pointer}.mchip span{font-size:.7rem;opacity:.7}
+body[data-mode="neraka"] #game,body[data-mode="abadi"] #game{box-shadow:0 0 0 3px color-mix(in srgb,var(--mc,#E5484D) 70%,transparent)}
+body[data-mode="hard"] .scard.cur{border-color:#F2B43A}body[data-mode="ngeri"] .scard.cur{border-color:#E07A2E}body[data-mode="neraka"] .scard.cur{border-color:#E5484D}body[data-mode="abadi"] .scard.cur{border-color:#A066E8}
+/* v8.5 10 menara */
+.row2.types{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:5px;scrollbar-width:none;padding-bottom:2px}.row2.types::-webkit-scrollbar{display:none}
+.row2.types .tt{flex:none;display:flex;flex-direction:column;align-items:center;padding:5px 10px;min-width:62px}.tt .tn{font-size:.8rem}.tt .tl{font:800 .58rem "Nunito",system-ui;color:var(--soft)}
+.tt.lk{opacity:.55}
+#devToggle{display:none!important}body.devshow #devToggle{display:block!important}
+.tpbig{width:72px;height:72px;flex:none}.tpinfo2{display:flex;gap:10px;align-items:center}.tpinfo2 canvas{width:64px;height:64px;flex:none}.tpbar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:6px 0}.tpbar i{display:block;height:100%;background:linear-gradient(90deg,#FFD27A,#FF9A3A)}.tpjurus{margin:6px 0 0;padding-left:18px}.tpjurus li{margin:3px 0}.tapaktop .tpinfo p{margin:2px 0}.tpc.on{border-color:#FFB040;box-shadow:inset 0 0 0 2px #FFD27A}.tpc.mitos h3{color:#9A5AE0}.tpc.locked .ico{filter:grayscale(.7);opacity:.75}
 </style>
 </head>
-<body>
-<div class="app">
-  <main>
-    <div class="bar">
-      <h1>Zombi Comel 6</h1>
-      <span style="flex:1"></span>
-      <span class="cur"><span id="icGold"></span><span id="gold">0</span></span>
-      <span class="cur"><span id="icGems"></span><span id="gems">0</span></span>
+<body data-screen="title">
+<div id="app">
+  <header class="hud" id="hud">
+    <button class="hbtn" id="pauseBtn" aria-label="Jeda" hidden>⏸</button>
+    <span class="brand" id="hudBrand">Zombi Comel</span><span class="supb" id="supBadge" hidden title="Penyokong">❤</span>
+    <span style="flex:1"></span>
+    <span class="cur buy" id="goldChip" role="button" aria-label="Tambah gold"><span id="icGold"></span><span id="gold">0</span><b class="plus">+</b></span>
+      <span class="cur buy" id="gemChip" role="button" aria-label="Tambah gems"><span id="icGems"></span><span id="gems">0</span><b class="plus">+</b></span>
       <span class="cur ev" id="evChip" hidden role="button">🎉 <span id="evName"></span></span>
       <span class="cur roh" id="rohChip" hidden>🔥<span id="roh">0</span></span>
-    </div>
-    <div class="chips" id="boostChips"></div>
-    <div class="stagebar">
+    <button class="hbtn" id="gearBtn" aria-label="Pilihan">⚙</button>
+  </header>
+  <div class="chips" id="boostChips"></div>
+  <div id="screens">
+    <section class="screen" id="hub" hidden>
+      <div class="hubrow"><button class="btn ghost" id="hubHarian">📅 Harian</button><button class="btn ghost" id="hubCabaran">⚔ Arena</button><button class="btn ghost" id="hubTrofi">🏆 Trofi</button></div>
+      <button class="mchip" id="hubMode" aria-label="Tukar mod">🙂 Normal</button>
+      <div class="cards"><div class="scard side" id="hubPrev"><canvas id="hubPrevCv" width="150" height="200"></canvas><span class="sn" id="hubPrevN"></span></div><div class="scard cur"><canvas id="hubCurCv" width="240" height="320"></canvas><span class="boss" id="hubBoss" hidden>👑 Boss</span></div><div class="scard side" id="hubNext"><canvas id="hubNextCv" width="150" height="200"></canvas><span class="sn" id="hubNextN"></span><span class="lock" id="hubLock" hidden>🔒</span></div></div>
+      <div class="stagebar">
       <button class="round" id="stagePrev" aria-label="Stage sebelum">‹</button>
       <div class="nm"><b id="stageName" role="button" tabindex="0" title="Tekan untuk lompat stage">Stage 1</b><small id="fp"></small></div>
       <button class="round" id="stageNext" aria-label="Stage seterusnya">›</button>
     </div>
-    <div class="jump" id="jumpRow" hidden><button class="btn ghost" id="jumpM10">−10</button><input id="jumpIn" type="number" min="1" inputmode="numeric" aria-label="Nombor stage"><button class="btn ghost" id="jumpP10">+10</button><button class="btn" id="jumpGo">Pergi</button><button class="btn ghost" id="jumpBest">Terbaik</button></div>
-    <div class="stage">
+      <div class="btips" id="hubAir" hidden></div>
+      <div class="jump" id="jumpRow" hidden><button class="btn ghost" id="jumpM10">−10</button><input id="jumpIn" type="number" min="1" inputmode="numeric" aria-label="Nombor stage"><button class="btn ghost" id="jumpP10">+10</button><button class="btn" id="jumpGo">Pergi</button><button class="btn ghost" id="jumpBest">Terbaik</button></div>
+      <div class="hubteam" id="hubTeam"></div>
+      <div class="warnbox hubbk" id="hubBackup" hidden>💾 Sudah seminggu tanpa sandaran kod save. <button class="btn" id="hubBkBtn">Eksport sekarang</button></div>
+      <div class="hinfo"><button id="hi1"></button><button id="hi2"></button><button id="hi3"></button><button id="hi4"></button></div>
+      <button class="btn big wide" id="hubStart">⚔ Mula</button>
+      <button class="btn ghost wide" id="hubUp">⬆ Naik semua</button>
+    </section>
+    <main class="screen" id="battle" hidden>
+      <div class="bstage" id="bStage"></div>
+      <div class="stage" id="stageBox">
       <canvas id="game" aria-label="Medan pertempuran zombie"></canvas>
       <div class="overlay" id="overlay" hidden><div class="ovbox"><h2 id="ovTitle"></h2><p id="ovBody"></p><div class="ovbtns" id="ovBtns"></div></div></div>
     </div>
-    <div class="powerbar" id="powerBar" aria-label="Kuasa"></div>
-    <div class="tut" id="tutBox" hidden><p id="tutText"></p><div class="tutb"><button class="btn ghost" id="tutSkip">Langkau</button><button class="btn" id="tutNext">Faham</button></div></div>
-  </main>
-  <aside>
-    <div class="ctrl">
+      <div class="qpanel" id="qPanel" hidden><div class="qhead"><b>⬆ Naik taraf terbaik</b><button class="hbtn" id="qClose" aria-label="Tutup">✕</button></div><div id="qList"></div><button class="btn wide" id="qAll">Naik semua</button></div>
+      <div class="ultbar" id="ultBar" aria-label="Ultimate hero" hidden></div>
+      <div class="powerbar" id="powerBar" aria-label="Kuasa"></div>
+      <div class="ctrl">
       <button class="btn" id="btnPlay">Mula</button>
       <button class="btn ghost" id="btnSpeed">Laju 1x</button>
       <button class="btn ghost" id="btnAuto" aria-pressed="false">Auto main</button>
       <button class="btn ghost" id="btnDps" aria-pressed="false">DPS</button>
+      <button class="btn ghost" id="quickUp" aria-label="Naik semua">⬆</button>
+      <button class="btn ghost" id="menuBtn" aria-label="Menu">☰</button>
     </div>
-    <div class="tabs" role="tablist">
+    </main>
+    <section class="screen page" id="pageView" hidden>
+      <div class="pagehead"><button class="hbtn" id="pageBack" aria-label="Kembali">‹</button><b id="pageTitle">Pasukan</b></div>
+      <div class="pagechips" id="pageChips"><button id="pc_hero" data-tab="hero">Hero</button><button id="pc_senjata" data-tab="senjata">Senjata</button><button id="pc_kuasa" data-tab="kuasa">Kuasa</button><button id="pc_beg" data-tab="beg">Beg</button><button id="pc_ekspedisi" data-tab="ekspedisi">🧭 Ekspedisi</button><button id="pc_pagar" data-tab="pagar">Pagar & Menara</button><button id="pc_kedai" data-tab="kedai">Kedai</button><button id="pc_arena" data-tab="arena">Arena</button><button id="pc_harian" data-tab="harian">Harian</button><button id="pc_trofi" data-tab="trofi">Trofi</button><button id="pc_ensiklo" data-tab="ensiklo">Ensiklopedia</button><button id="pc_info" data-tab="info">Pilihan</button></div>
+      <div class="tabs" role="tablist">
       <button role="tab" id="tab_hero" aria-selected="true">Hero</button>
       <button role="tab" id="tab_senjata" aria-selected="false">Senjata</button>
       <button role="tab" id="tab_kuasa" aria-selected="false">Kuasa</button>
       <button role="tab" id="tab_pagar" aria-selected="false">Pagar</button>
-      <button role="tab" id="tab_beg" aria-selected="false">Beg</button>
+      <button role="tab" id="tab_beg" aria-selected="false">Beg</button><button role="tab" id="tab_ekspedisi" aria-selected="false">Ekspedisi</button>
       <button role="tab" id="tab_kedai" aria-selected="false">Kedai</button>
       <button role="tab" id="tab_arena" aria-selected="false">Arena</button>
       <button role="tab" id="tab_ganjaran" aria-selected="false">Ganjaran</button>
       <button role="tab" id="tab_lagi" aria-selected="false">Lagi</button>
     </div>
-    <div class="subtabs" id="sub_ganjaran" hidden><button id="tab_harian" aria-selected="false">Harian</button><button id="tab_trofi" aria-selected="false">Trofi</button></div>
-    <div class="subtabs" id="sub_lagi" hidden><button id="tab_ensiklo" aria-selected="false">Ensiklopedia</button><button id="tab_info" aria-selected="false">Tetapan &amp; Info</button></div>
-    <section id="pane_hero" class="scroll">
+      <div class="subtabs" id="sub_ganjaran" hidden><button id="tab_harian" aria-selected="false">Harian</button><button id="tab_trofi" aria-selected="false">Trofi</button></div>
+      <div class="subtabs" id="sub_lagi" hidden><button id="tab_ensiklo" aria-selected="false">Ensiklopedia</button><button id="tab_info" aria-selected="false">Tetapan &amp; Info</button></div>
+      <section id="pane_hero" class="scroll">
       <p class="muted" style="margin:0 0 6px">Tip: tekan hero di medan untuk lihat jarak senjata; seret hero ke hero lain untuk tukar kedudukan.</p>
       <div class="toolbar"><canvas id="slotIco" class="ico28" aria-hidden="true"></canvas><span class="grow" id="slotInfo"></span><button class="btn" id="btnSlot"></button></div>
       <div class="row2"><button class="btn big" id="upAll">⬆ Naik semua (gold)</button><button class="btn ghost" id="bestTeamBtn">✨ Susun terbaik</button></div>
-      <div id="heroList"></div>
+      <div id="heroGrid"><h3 class="sec" id="hgTeamH">Pasukan</h3><div class="hgrid" id="hgTeam"></div><h3 class="sec" id="hgOwnH">Hero lain</h3><div class="hgrid" id="hgOwn"></div><h3 class="sec" id="hgLockH">Belum dibina</h3><div class="hgrid" id="hgLock"></div></div>
+      <div id="heroList"><button class="hbtn" id="heroClose" aria-label="Tutup">✕ Tutup</button></div>
     </section>
     <section id="pane_senjata" class="scroll" hidden>
       <div class="toolbar"><span class="grow" id="wpnCount"></span></div>
+      <div class="filters" id="wpnFilt"><button data-wf="semua" aria-pressed="true">Semua</button><button data-wf="f" aria-pressed="false">🗡 Fizikal</button><button data-wf="m" aria-pressed="false">✨ Magis</button><button data-wf="u" aria-pressed="false">⬆ Udara</button></div>
+      <div class="filters" id="wpnFilt2"><select id="wpnJenis" aria-label="Tapis ikut jenis senjata"></select><select id="wpnRar" aria-label="Tapis ikut kelangkaan"></select><button id="wpnOwn" aria-pressed="false">✔ Dimiliki</button></div>
       <p class="muted" style="margin:0 0 8px">Tekan Uji untuk melihat senjata beraksi, walaupun belum dimiliki. Pasang senjata pada hero di tab Hero.</p>
       <div class="panelbox pvbox" id="pvBox" hidden><canvas id="pvCv" aria-label="Pratonton senjata"></canvas><div class="pvbar"><p id="pvName"></p><button class="btn ghost" id="pvClose">Tutup</button></div></div>
       <div id="wpnList"></div>
     </section>
     <section id="pane_kuasa" class="scroll" hidden>
-      <div class="toolbar"><span class="grow">Tekan ikon kuasa di bawah medan untuk guna semasa bertempur.</span><button class="btn ghost" id="autoPow" aria-pressed="false">Auto kuasa: mati</button></div>
-      <div id="powList"></div>
+      <div class="kchips"><button id="kq_pow" aria-selected="true">⚡ Kuasa</button><button id="kq_tapak" aria-selected="false">✋ Tapak</button></div>
+      <div id="kqs_pow"><div class="toolbar"><span class="grow">Tekan ikon kuasa di bawah medan untuk guna semasa bertempur.</span><button class="btn ghost" id="autoPow" aria-pressed="false">Auto kuasa: mati</button></div>
+      <div id="powList"></div></div>
+      <div id="kqs_tapak" hidden><div id="tapakBox"></div></div>
+    </section>
+    <section id="pane_ekspedisi" class="scroll" hidden>
+      <div class="panelbox"><p id="trainInfo" style="margin:0"></p></div>
+      <h3 class="sec">🧭 Ekspedisi (3 slot)</h3><p class="muted" style="margin:0 0 6px">Hero simpanan pergi mengembara dan pulang dengan gold, gems, shard dan item, walaupun game ditutup.</p>
+      <div id="expList"></div>
     </section>
     <section id="pane_pagar" class="scroll" hidden>
+      <div class="fortbox"><canvas id="fortCv" width="720" height="360" aria-label="Pratonton kubu: tekan menara atau soket item"></canvas><div class="fstats" id="fortStats"></div></div>
       <div class="panelbox"><div class="wsum"><canvas id="wallSumIco" aria-hidden="true"></canvas><p id="wallSum"></p></div><div id="wallSlots"></div></div>
-      <h3 class="sec">Menara pagar</h3><p class="muted" style="margin:0 0 6px">Menara menembak sendiri dari atas pagar. Tekan menara di medan untuk lihat jaraknya.</p>
+      <h3 class="sec">Menara pagar</h3><p class="muted" style="margin:0 0 6px">Menara menembak sendiri dari atas pagar. Pilih cabang khas di Lv.25 dan Lv.50.</p>
+      <div class="row2" style="margin-bottom:8px"><button class="btn" id="towerAllBtn">⬆ Naik semua menara</button><button class="btn ghost" id="tower4Btn" hidden>Slot ke-4</button></div>
       <div id="towerList"></div>
-      <h3 class="sec">50 jenis pagar</h3>
+      <h3 class="sec">50 jenis pagar · leret ke tepi</h3>
+      <button class="btn big wide" id="wallNextBtn">Bina seterusnya</button>
       <div id="wallList"></div>
     </section>
     <section id="pane_beg" class="scroll" hidden>
-      <div class="toolbar"><span class="grow" id="invCount"></span><button class="btn" id="autoEquip">Pasang terbaik</button><button class="btn ghost" id="sell0">Jual Biasa</button><button class="btn ghost" id="sell1">Jual ≤ Luar Biasa</button><select id="autoSell" aria-label="Auto-jual"></select></div>
-      <div class="filters"><button id="f_semua" aria-pressed="true">Semua</button><button id="f_senjata" aria-pressed="false">Senjata</button><button id="f_aksesori" aria-pressed="false">Aksesori</button><button id="f_perisai" aria-pressed="false">Perisai pagar</button></div>
-      <div id="invList"></div>
+      <div class="toolbar"><span class="grow" id="invCount"></span><button class="btn" id="autoEquip">Pasang terbaik</button><button class="btn ghost" id="fuseAllBtn">🔀 Gabung</button><button class="btn ghost" id="sell0">Jual Biasa</button><button class="btn ghost" id="sell1">Jual ≤ Luar Biasa</button><select id="autoSell" aria-label="Auto-jual"></select></div>
+      <div class="filters"><button id="f_semua" aria-pressed="true">Semua</button><button id="f_senjata" aria-pressed="false">Senjata</button><button id="f_helm" aria-pressed="false">⛑ Topi</button><button id="f_baju" aria-pressed="false">🦺 Baju</button><button id="f_tangan" aria-pressed="false">🧤 Tangan</button><button id="f_but" aria-pressed="false">👢 But</button><button id="f_beg" aria-pressed="false">🎒 Beg</button><button id="f_perisai" aria-pressed="false">🛡 Pagar</button></div>
+      <div class="igrid" id="invGrid"></div>
+      <div id="invList"></div><button class="hbtn" id="invClose" aria-label="Tutup" hidden>✕ Tutup</button>
     </section>
     <section id="pane_kedai" class="scroll" hidden>
-      <h3 class="sec">Naik taraf (tiada had)</h3><div id="shopUp"></div>
-      <h3 class="sec">Shard hero</h3><div id="shopHero"></div>
-      <h3 class="sec">Booster</h3><div id="shopBoost"></div>
-      <h3 class="sec">Peti item</h3><div id="shopChest"></div>
+      <div class="card shop walletCard"><div class="info"><h3>💰 Tambah gold &amp; gems</h3><p>Pek gold, tukar gold → gems, hadiah gems harian.</p></div><button class="btn" id="walletOpen2">Buka</button></div>
+      <div class="kchips"><button id="kc_up" aria-selected="true">⬆ Naik taraf</button><button id="kc_hero" aria-selected="false">🦸 Shard hero</button><button id="kc_wpeti" aria-selected="false">⚔ Peti senjata</button><button id="kc_boost" aria-selected="false">⚡ Booster</button><button id="kc_peti" aria-selected="false">🎁 Peti item</button><button id="kc_beli" aria-selected="false">💎 Beli</button></div>
+      <div id="ks_up"><div id="shopUp"></div></div>
+      <div id="ks_hero" hidden><div id="shopHero"></div></div>
+      <div id="ks_wpeti" hidden><div id="shopWpn"></div></div>
+      <div id="ks_boost" hidden><div id="shopBoost"></div></div>
+      <div id="ks_beli" hidden>
+          <p class="muted" id="iapStatus" style="margin:0 0 6px"></p>
+          <div id="iapList"></div>
+          <p class="muted iapnote">🔒 Setiap pembelian memerlukan jawapan ibu bapa/penjaga. 🎲 Kadar setiap peti dipaparkan pada butang ⓘ Kadar sebelum dibuka. Gems juga boleh diperoleh percuma: hadiah harian, misi, boss & ekspedisi.</p>
+          <button class="btn ghost wide" id="iapRestore">Pulihkan pembelian</button>
+        </div>
+        <div id="ks_peti" hidden><div id="shopChest"></div></div>
     </section>
     <section id="pane_arena" class="scroll" hidden>
+      <h3 class="sec">👑 Serbuan Boss Mingguan</h3><div id="raidBox" class="panelbox"></div>
       <h3 class="sec">Kebangkitan</h3>
       <div class="panelbox"><div class="wsum"><canvas id="rohIco" aria-hidden="true"></canvas><p id="rohInfo"></p></div><button class="btn big wide" id="prestigeBtn">Bangkit</button></div>
       <h3 class="sec">Kedai Roh (kekal selama-lamanya)</h3><div id="perkList"></div>
@@ -286,7 +611,7 @@ input[type=range]{width:100%;accent-color:var(--go)}
       <div id="achList"></div>
     </section>
     <section id="pane_ensiklo" class="scroll" hidden>
-      <div class="filters"><button id="enc_hero" aria-pressed="false">Hero</button><button id="enc_zombie" aria-pressed="true">Zombie</button><button id="enc_senjata" aria-pressed="false">Senjata</button><button id="enc_pagar" aria-pressed="false">Pagar</button><button id="enc_item" aria-pressed="false">Item</button><button id="enc_kuasa" aria-pressed="false">Kuasa</button><button id="enc_sifat" aria-pressed="false">Sifat &amp; Evolusi</button><button id="enc_tier" aria-pressed="false">Tier &amp; Bintang</button><button id="enc_latar" aria-pressed="false">Latar</button><button id="enc_kedai" aria-pressed="false">Kedai</button></div>
+      <div class="filters"><button id="enc_hero" aria-pressed="false">Hero</button><button id="enc_zombie" aria-pressed="true">Zombie</button><button id="enc_boss" aria-pressed="false">👑 Boss</button><button id="enc_senjata" aria-pressed="false">Senjata</button><button id="enc_pagar" aria-pressed="false">Pagar</button><button id="enc_item" aria-pressed="false">Item</button><button id="enc_kostum" aria-pressed="false">Kostum</button><button id="enc_kuasa" aria-pressed="false">Kuasa</button><button id="enc_sifat" aria-pressed="false">Sifat &amp; Evolusi</button><button id="enc_tier" aria-pressed="false">Tier &amp; Bintang</button><button id="enc_latar" aria-pressed="false">Latar</button><button id="enc_bunyi" aria-pressed="false">🎧 Bunyi</button><button id="enc_kedai" aria-pressed="false">Kedai</button></div>
       <p class="muted" id="encInfo" style="margin:0 0 6px;font-weight:800"></p>
       <div id="encZTools"><div class="filters"><button id="ef_semua" aria-pressed="true">Semua</button><button id="ef_ditemui" aria-pressed="false">Ditemui</button><button id="ef_belum" aria-pressed="false">Belum</button></div>
         <div class="trrow"><select id="encBase" aria-label="Jenis zombie"></select><input id="encQ" type="search" placeholder="Cari nama zombie" aria-label="Cari zombie"></div></div>
@@ -308,13 +633,15 @@ input[type=range]{width:100%;accent-color:var(--go)}
       </div>
       <div class="howto" style="margin-top:10px">
         <h3>Tetapan</h3>
-        <div class="trrow"><label>Muzik <input type="range" id="musicVol" min="0" max="100"></label><label>Bunyi <input type="range" id="sfxVol" min="0" max="100"></label></div>
-        <div class="trrow"><button class="btn ghost" id="gfxMode">Grafik: penuh</button><button class="btn ghost" id="tutAgain">Ulang tutorial</button></div>
-        <div class="trrow"><button class="btn ghost" id="vibBtn">Getaran: hidup</button><button class="btn ghost" id="bigBtn">Teks besar: mati</button></div>
+        <div class="vols"><label class="vol"><span>🎵 Muzik <b id="musicVolV"></b></span><input type="range" id="musicVol" min="0" max="100" step="1"></label><label class="vol"><span>🔊 Kesan bunyi <b id="sfxVolV"></b></span><input type="range" id="sfxVol" min="0" max="100" step="1"></label><label class="vol"><span>🌧 Suasana <b id="ambVolV"></b></span><input type="range" id="ambVol" min="0" max="100" step="1"></label><label class="vol"><span>📢 Kuat keseluruhan <b id="masterVolV"></b></span><input type="range" id="masterVol" min="50" max="300" step="10"></label></div>
+        <div class="trrow"><button class="btn ghost" id="voiceBtn">Suara watak: hidup</button><button class="btn ghost" id="dmgNumBtn">Angka damage: hidup</button></div>
+        <div class="trrow"><button class="btn ghost" id="gfxMode">Mod prestasi: mati</button><button class="btn ghost" id="tutAgain">Ulang tutorial</button></div>
+        <div class="trrow"><button class="btn ghost" id="vibBtn">Getaran: hidup</button><button class="btn ghost" id="gearViewBtn">Papar peralatan: penuh</button><button class="btn ghost" id="awakeBtn">Skrin sentiasa hidup: hidup</button><button class="btn ghost" id="bigBtn">Teks besar: mati</button></div>
         <div class="trrow"><button class="btn ghost" id="calmBtn">Kurangkan kilatan &amp; gegaran: mati</button></div>
       </div>
       <div class="howto" style="margin-top:10px">
         <h3>Sandaran save</h3>
+        <div id="bkList"></div><button class="btn ghost" id="bkNow" style="margin:4px 0 10px">💾 Simpan sandaran dalam peranti sekarang</button>
         <p class="warnbox" id="backupNote" hidden>💾 Sudah lebih 3 hari tanpa sandaran. Tekan Eksport dan simpan kod di tempat selamat.</p>
         <p>Progress disimpan dalam browser ini sahaja. Eksport kod save dan simpan di tempat selamat. Untuk pindah ke peranti lain, tampal kod dan tekan Import.</p>
         <textarea id="saveCode" rows="3" placeholder="Kod save (ZC5:...)" aria-label="Kod save"></textarea>
@@ -322,9 +649,10 @@ input[type=range]{width:100%;accent-color:var(--go)}
       </div>
       <div class="howto" style="margin-top:10px">
         <button class="btn ghost" id="btnReset">Padam progress</button>
-        <p class="ver">Versi 6.2 (pengurusan item, petua, lagu & kemasan). Progress disimpan dalam browser ini.</p>
+        <p class="ver" id="verText">Versi 9.17 (tekan di mana-mana, bunyi lebih kuat). Progress disimpan dalam browser ini.</p>
       </div>
-      <button class="btn ghost" id="devToggle">Mod Pembangun (trainer)</button>
+      <button class="btn ghost" id="discBtn2">Penafian &amp; kredit</button>
+      <!--DEV-START--><button class="btn ghost" id="devToggle">Mod Pembangun (trainer)</button>
       <div class="howto trainer" id="trainerBox" hidden>
         <h3>Trainer</h3>
         <p>Untuk menguji dan main santai dalam game sendiri.</p>
@@ -334,14 +662,53 @@ input[type=range]{width:100%;accent-color:var(--go)}
         <div class="trrow"><button class="btn ghost" id="trSet">Tetapkan nilai</button></div>
         <div class="trrow"><button class="btn ghost" id="trHero">Buka semua hero + slot</button><button class="btn ghost" id="trStage">Buka +50 stage</button></div>
         <div class="trrow"><select id="evForce" aria-label="Paksa event"></select></div>
+        <div class="trrow"><select id="trJenis" aria-label="Jenis item"></select><select id="trRar" aria-label="Tahap item"></select><button class="btn ghost" id="trGive">Beri item</button></div>
+        <div class="trrow"><button class="btn ghost" id="trSkins">Buka semua kostum</button></div>
         <div class="trrow"><button class="btn ghost" id="trShard">+100 shard semua hero</button><button class="btn ghost" id="trSeen">Semua zombie ditemui</button></div>
         <div class="trrow"><button class="btn ghost" id="trPow">Buka semua kuasa</button><button class="btn ghost" id="trCd">Kuasa sedia segera</button></div>
         <div class="trrow"><button class="btn ghost" id="trWpn">Buka semua senjata</button><button class="btn ghost" id="trWall">Buka semua pagar</button></div>
         <div class="trrow"><button class="btn ghost" id="trItem">Dapat item Abadi</button><button class="btn ghost" id="trBoost">Semua booster +10 min</button></div>
         <div class="trrow"><button class="btn ghost" id="trGod" aria-pressed="false">Pagar kebal: mati</button><button class="btn ghost" id="trKill">Bunuh semua zombie</button></div>
-      </div>
+      </div><!--DEV-END-->
     </section>
-  </aside>
+  
+    </section>
+  </div>
+  <nav id="nav" hidden>
+    <button id="navHome" aria-current="true"><span class="ni">🏠</span>Rumah</button>
+    <button id="navTeam"><span class="ni">🦸</span>Pasukan</button>
+    <button id="navFort"><span class="ni">🏰</span>Kubu</button>
+    <button id="navShop"><span class="ni">🛒</span>Kedai</button>
+    <button id="navMore"><span class="ni">☰</span>Lagi</button>
+  </nav>
+  <div class="tut" id="tutBox" hidden><p id="tutText"></p><div class="tutb"><button class="btn ghost" id="tutSkip">Langkau</button><button class="btn" id="tutNext">Faham</button></div></div>
 </div>
+<div id="titleScreen">
+  <canvas id="titleCv" aria-hidden="true"></canvas>
+  <div class="tmenu">
+    <div class="tlogo"><canvas id="logoCv" width="220" height="220" aria-hidden="true"></canvas><h1>Zombi Comel</h1><p>Pertahanan zombie paling comel</p></div>
+    <div class="tbtns">
+      <button class="btn big" id="tContinue">▶ Mula main</button>
+        <div class="mgrid" id="tModes" aria-label="Pilih mod"></div>
+      <button class="btn ghost" id="tNew" hidden>Mula baharu</button>
+      <div class="trow"><button class="btn ghost" id="tOptions">⚙ Pilihan</button><button class="btn ghost" id="tDisc">ℹ Penafian</button></div>
+      <button class="btn ghost" id="tInstall" hidden>📲 Pasang aplikasi</button>
+    </div>
+    <p class="tfoot" id="tFoot">Dibina oleh Zuuussss</p>
+  </div>
+</div>
+<div id="heroSheet" hidden><div class="hsx">
+  <div class="hshead"><canvas id="hsPor" width="160" height="160" aria-hidden="true"></canvas><div class="hsinfo"><b id="hsName"></b><span id="hsMeta"></span><span id="hsStars"></span><span id="hsCp"></span></div><div class="hsnav"><button class="hbtn" id="hsClose" aria-label="Tutup">✕</button><div><button class="hbtn" id="hsPrev" aria-label="Hero sebelum">‹</button><button class="hbtn" id="hsNext" aria-label="Hero seterusnya">›</button></div></div></div>
+  <p id="hsKp" class="kp"></p>
+  <div class="hsact"><button class="btn" id="hsUp">Naik</button><button class="btn ghost" id="hsX10">×10</button><button class="btn ghost" id="hsMax">MAX</button></div>
+  <button class="btn wide" id="hsStar">★</button>
+  <div id="hsGearBox"><div class="hsgear" id="hsGear"></div><p class="hsset" id="hsSet"></p><button class="btn ghost wide" id="hsBest">✨ Pasang terbaik untuk hero ini</button></div>
+  <div class="hstabs"><button id="hst_stat" aria-selected="true">📊 Stat</button><button id="hst_kostum" aria-selected="false">👘 Kostum</button><button id="hst_senjata" aria-selected="false">⚔ Senjata</button></div>
+  <div id="hsBody"></div>
+  <div class="hsmisc" id="hsMisc"><button class="btn ghost" id="hsTeam">Keluar</button><button class="btn ghost" id="hsL" aria-label="Alih kiri">◀</button><button class="btn ghost" id="hsR" aria-label="Alih kanan">▶</button><button class="btn ghost" id="hsBuy5">+5 shard</button></div>
+</div></div>
+<div id="chestFx" hidden><div class="cfxin"><h2 id="cfxTitle"></h2><canvas id="cfxCv" width="720" height="520" aria-label="Animasi peti: tekan untuk percepat"></canvas><div id="cfxCards"></div><div id="cfxBtns" hidden><button class="btn" id="cfxAgain">Buka lagi</button><button class="btn ghost" id="cfxTen">Buka ×10</button><button class="btn ghost" id="cfxClose">Tutup</button></div><button class="btn ghost" id="cfxSkip">Langkau ⏭</button></div></div>
+<div class="modal" id="modal" hidden><div class="mbox"><h2 id="mTitle"></h2><div class="mbody" id="mBody"></div><div id="mBtns"></div></div></div>
+<div id="splash"><canvas id="splashCv" width="200" height="200" aria-hidden="true"></canvas><b>Zombi Comel</b><small>Memuatkan…</small></div>
 <div class="toast" id="toast" role="status"></div>
 <script>

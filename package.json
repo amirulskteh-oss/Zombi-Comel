@@ -1,14 +1,18 @@
 {
   "name": "zombi-comel",
-  "version": "6.2.0",
+  "version": "8.5.0",
   "description": "Game idle pertahanan zombie comel (HTML5, satu fail, boleh dipasang sebagai PWA)",
   "private": true,
   "scripts": {
     "build": "node tools/build.js",
     "build:telefon": "node tools/build.js --flat",
-    "check": "node --check src/logic.js && node --check src/ui.js && node --check public/sw.js && node --check tools/build.js",
-    "test": "npm run check && npm run build && node test/unit.test.js && node test/smoke-v3.test.js && node test/smoke-v4.test.js",
-    "balance": "node test/balance.js 120"
+    "check": "node --check src/logic.js && node --check public/sw.js && node --check tools/build.js && node tools/build.js && node tools/check-built.js",
+    "test": "npm run check && node test/unit.test.js && node test/smoke-v3.test.js && node test/smoke-v4.test.js && node test/smoke-play.test.js && node test/smoke-billing.test.js",
+    "balance": "node test/balance.js 120",
+    "build:artifact": "node tools/build.js --artifact",
+    "test:audio": "node test/audio.test.js"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  }
 }

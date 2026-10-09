@@ -38,12 +38,25 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 let head = read('head.html');
 if (!head.includes('<meta name="viewport"')) throw new Error('head.html tiada meta viewport');
 head = head.replace('</title>', '</title>\n' + PWA_HEAD);
-const html = head + logic + read('ui.js') + '</script>\n' + PWA_FOOT + '</body>\n</html>\n';
+// UI dipecah kepada modul dalam src/ui/ (01-…, 02-…); digabung mengikut susunan nama fail
+const UI_DIR = path.join(SRC, 'ui'), ui = fs.readdirSync(UI_DIR).filter(f => f.endsWith('.js')).sort().map(f => fs.readFileSync(path.join(UI_DIR, f), 'utf8')).join('');
+// --- dua binaan ---
+// PLAY (docs/index.html): trainer & Mod Pembangun dibuang sepenuhnya — inilah yang dimuat oleh aplikasi Google Play (TWA)
+// DEV  (docs/dev/index.html): dengan trainer, save berasingan, tanpa PWA — untuk Cikgu menguji
+const headDev = head.replace('</title>\n' + PWA_HEAD, '</title>\n');
+const toPlay = s => { const out = s.replace(/<!--DEV-START-->[\s\S]*?<!--DEV-END-->/g, '').replace('const PLAY_BUILD = false;', 'const PLAY_BUILD = true;'); if (!out.includes('const PLAY_BUILD = true;')) throw new Error('bendera PLAY_BUILD tidak ditemui'); if (/id="(trainerBox|devToggle|trGold1)"/.test(out)) throw new Error('trainer masih ada dalam binaan Play'); return out; };
+const devLogic = logic.replace("const SAVE_KEY = 'zombi_comel_save_v1';", "const SAVE_KEY = 'zombi_comel_dev_save_v1';");
+if (devLogic === logic) throw new Error('SAVE_KEY tidak ditemui');
+const devHtml = headDev.replace('<title>Zombi Comel', '<title>[DEV] Zombi Comel') + devLogic + ui + '</script>\n</body>\n</html>\n';
+if (process.argv.includes('--artifact')) { fs.writeFileSync(path.join(ROOT, 'zombi-comel.html'), headDev + logic + ui + '</script>\n</body>\n</html>\n'); }
+const html = toPlay(head + logic + ui + '</script>\n' + PWA_FOOT + '</body>\n</html>\n');
 
 const fix = s => FLAT ? s.replace(/icons\//g, '') : s;
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, FLAT ? '' : 'icons'), { recursive: true });
 fs.writeFileSync(path.join(OUT, 'index.html'), fix(html));
+if (!FLAT) { fs.mkdirSync(path.join(OUT, 'dev'), { recursive: true }); fs.writeFileSync(path.join(OUT, 'dev', 'index.html'), devHtml); }
+fs.writeFileSync(path.join(OUT, 'privasi.html'), fs.readFileSync(path.join(PUB, 'privasi.html'), 'utf8').replace(/\{\{VERSI\}\}/g, versi));
 fs.writeFileSync(path.join(OUT, 'sw.js'), fix(fs.readFileSync(path.join(PUB, 'sw.js'), 'utf8')).replace(/__VERSI__/g, versi));
 fs.writeFileSync(path.join(OUT, 'manifest.webmanifest'), fix(fs.readFileSync(path.join(PUB, 'manifest.webmanifest'), 'utf8')));
 for (const f of fs.readdirSync(path.join(PUB, 'icons'))) fs.copyFileSync(path.join(PUB, 'icons', f), path.join(OUT, FLAT ? '' : 'icons', f));

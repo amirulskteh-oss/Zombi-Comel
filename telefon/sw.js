@@ -1,6 +1,6 @@
 // Service worker Zombi Comel: simpan fail game supaya boleh dimain tanpa internet.
-// 6.2 diganti oleh tools/build.js setiap kali dibina, jadi versi baharu = cache baharu.
-const CACHE = 'zombi-comel-6.2';
+// 9.17 diganti oleh tools/build.js setiap kali dibina, jadi versi baharu = cache baharu.
+const CACHE = 'zombi-comel-9.17';
 const FONTS = 'zombi-comel-fonts';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './maskable-512.png', './apple-touch-icon.png', './favicon-64.png'];
 

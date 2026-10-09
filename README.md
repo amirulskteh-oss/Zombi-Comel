@@ -13,7 +13,8 @@ zombi-comel/
 ├── src/                  ← KOD SUMBER (edit di sini)
 │   ├── head.html         ← HTML + CSS (bahagian atas fail)
 │   ├── logic.js          ← logik game (tiada DOM, boleh diuji)
-│   └── ui.js             ← paparan, lukisan, bunyi, kawalan
+│   └── ui/               ← paparan, lukisan, bunyi, kawalan (11 modul: 01-permulaan.js … 11-v7-skrin…js)
+│                           digabung mengikut susunan nama fail; jangan ubah nombor di depan
 ├── public/               ← fail PWA
 │   ├── manifest.webmanifest
 │   ├── sw.js             ← service worker (main tanpa internet)
@@ -96,6 +97,27 @@ cd docs && python3 -m http.server 8000   # cuba di http://localhost:8000
 > Service worker hanya aktif di **HTTPS** (GitHub Pages). Di `localhost` game tetap berfungsi, cuma tanpa mod offline.
 
 ---
+
+## 🎧 Ujian bunyi (pilihan)
+
+```
+npm i --no-save node-web-audio-api
+npm run test:audio
+```
+Menjana setiap bunyi ke memori dan memeriksa ia tidak senyap, tidak pecah dan tempohnya munasabah. Sama ada bunyi itu *sedap* didengar perlu dinilai dengan telinga di **Ensiklopedia → 🎧 Bunyi**.
+
+## 🎞 Menggantikan sprite dengan seni PNG (pilihan masa depan)
+
+Badan zombie kini dilukis sekali ke **atlas sprite** (8 bingkai berjalan mendatar) dan disalin setiap bingkai.
+Untuk menggunakan seni PNG sendiri, daftarkan sprite sheet dengan format yang sama:
+
+```js
+// bingkai mendatar; fw×fh setiap bingkai; ax, ay = titik tengah kaki; saiz rujukan jejari zombie 22 px
+ZC_registerSprite('zombie:biasa', 'sprites/zombie-biasa.png', 80, 90, 8, 40, 50);
+```
+
+Jenis: `biasa`, `gemuk`, `laju`, `topi`, `kesatria`, `peludah`, `beku`, `hantu`, `pengebom`, `penyembuh`, `melompat`, `gergasi`.
+Jika PNG gagal dimuat, game kembali kepada sprite yang dilukis sendiri.
 
 ## 🏪 Play Store? (pilihan masa depan)
 
