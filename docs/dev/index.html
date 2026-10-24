@@ -73,6 +73,14 @@ button:focus-visible{outline:3px solid var(--gem);outline-offset:2px}
 .ver{color:var(--soft);font-size:.8rem;margin-top:10px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:-2px 0 8px}
 .chip{background:var(--gem);color:#fff;font:800 .78rem "Nunito";padding:2px 10px;border-radius:999px}
+.hero-tools{display:flex;align-items:center;gap:8px;margin:8px 0 6px}
+.hero-search{display:flex;align-items:center;gap:6px;min-width:0;flex:1;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:0 10px;color:var(--soft);font-size:1.2rem}
+.hero-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:700 .95rem "Nunito";padding:9px 0}
+.hero-result{flex:none;color:var(--soft);font-size:.8rem;font-weight:800}
+.hero-filters{margin-bottom:8px}
+.hero-filters button{font:800 .82rem "Nunito";padding:6px 9px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--soft);cursor:pointer}
+.hero-filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card.hero[hidden]{display:none!important}
 .card.hero{align-items:flex-start}
 .card.hero.inteam{border-color:var(--go)}
 .card .acts{display:flex;flex-direction:column;gap:6px;flex:none}
@@ -536,6 +544,16 @@ body[data-mode="hard"] .scard.cur{border-color:#F2B43A}body[data-mode="ngeri"] .
       <p class="muted" style="margin:0 0 6px">Tip: tekan hero di medan untuk lihat jarak senjata; seret hero ke hero lain untuk tukar kedudukan.</p>
       <div class="toolbar"><canvas id="slotIco" class="ico28" aria-hidden="true"></canvas><span class="grow" id="slotInfo"></span><button class="btn" id="btnSlot"></button></div>
       <div class="row2"><button class="btn big" id="upAll">⬆ Naik semua (gold)</button><button class="btn ghost" id="bestTeamBtn">✨ Susun terbaik</button></div>
+      <div class="hero-tools">
+        <label class="hero-search"><span aria-hidden="true">⌕</span><input id="heroSearch" type="search" placeholder="Cari nama hero…" autocomplete="off" aria-label="Cari hero"></label>
+        <span id="heroResult" class="hero-result" aria-live="polite">22 / 22 hero</span>
+      </div>
+      <div class="filters hero-filters" id="heroFilters" role="group" aria-label="Tapis koleksi hero">
+        <button type="button" data-hero-filter="semua" aria-pressed="true">Semua</button>
+        <button type="button" data-hero-filter="pasukan" aria-pressed="false">Pasukan</button>
+        <button type="button" data-hero-filter="milik" aria-pressed="false">Hero lain</button>
+        <button type="button" data-hero-filter="belum" aria-pressed="false">Belum dibina</button>
+      </div>
       <div id="heroGrid"><h3 class="sec" id="hgTeamH">Pasukan</h3><div class="hgrid" id="hgTeam"></div><h3 class="sec" id="hgOwnH">Hero lain</h3><div class="hgrid" id="hgOwn"></div><h3 class="sec" id="hgLockH">Belum dibina</h3><div class="hgrid" id="hgLock"></div></div>
       <div id="heroList"><button class="hbtn" id="heroClose" aria-label="Tutup">✕ Tutup</button></div>
     </section>
@@ -1243,6 +1261,7 @@ function claimEventChest(save, now, rng) {
 function encodeSave(save) { const j = JSON.stringify(save); return 'ZC5:' + btoa(unescape(encodeURIComponent(j))); }
 function decodeSave(code, now) {
   code = String(code || '').trim(); if (!code.startsWith('ZC5:')) throw new Error('Kod save tidak sah (mesti bermula dengan ZC5:)');
+  if (code.length > 2 * 1024 * 1024) throw new Error('Kod save terlalu besar');
   let o; try { o = JSON.parse(decodeURIComponent(escape(atob(code.slice(4))))); } catch (e) { throw new Error('Kod save rosak atau tidak lengkap'); }
   if (!o || typeof o !== 'object' || !o.heroes) throw new Error('Kod save tidak mengandungi data game');
   return migrate(o, now);
@@ -2046,6 +2065,9 @@ function migrate0(o, now) {
   let items = Array.isArray(o.items) ? o.items.filter(it => it && typeof it.uid === 'number' && (ITEM_NAMES[it.jenis] || it.jenis === 'aksesori') && typeof it.rar === 'number' && it.ilvl >= 1) : [];
   items = items.map(it => { if (it.jenis !== 'aksesori') return it; const m = AKS_MAP[Math.floor(num(it.base, 0)) % 6]; return Object.assign({}, it, { jenis: m[0], base: m[1] }); });
   items = items.map(it => ({ uid: it.uid, jenis: it.jenis, rar: Math.min(9, Math.max(0, Math.floor(ver < 3 ? (RMAP[it.rar] ?? 0) : it.rar))), ilvl: Math.floor(it.ilvl), base: Math.floor(num(it.base, 0)) % 6, lock: it.lock === true, sub: Array.isArray(it.sub) ? it.sub.filter(s => s && SUBSTATS[s.k] && s.q > 0 && s.q < 3).slice(0, 3).map(s => ({ k: s.k, q: +s.q })) : null })).map(it => { if (!it.sub) it.sub = rollSubs(it.jenis, it.rar, it.uid * 7919 + it.rar); return it; }).slice(0, INV_CAP);
+  // UID mesti unik: itemByUid mengambil padanan pertama, jadi migrasi juga perlu mengekalkan padanan pertama.
+  const seenUid = new Set();
+  items = items.filter(it => { if (seenUid.has(it.uid)) return false; seenUid.add(it.uid); return true; });
   const uids = new Set(items.map(i => i.uid)), jenisOf = {}; items.forEach(i => { jenisOf[i.uid] = i.jenis; });
   const equip = {};
   if (o.equip && typeof o.equip === 'object') for (const h of Object.keys(o.equip)) if (heroes[h]) { const e = o.equip[h] || {}; equip[h] = {}; HERO_SLOTS.concat(['aksesori']).forEach(s => { const u = e[s], j = jenisOf[u]; if (uids.has(u) && HERO_SLOTS.includes(j) && equip[h][j] == null && !Object.values(equip).some(q => Object.values(q).includes(u))) equip[h][j] = u; }); }
@@ -3794,6 +3816,36 @@ function fmtNum(n) {
   // ---------- zombie dengan animasi berjalan, menyerang, terbakar, beku ----------
   function mixCol(a, b, k) { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), x = p(a), y = p(b); return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * k).toString(16).padStart(2, '0')).join(''); }
   function zCol(z) { if (z._col) return z._col; z._col = z.tint ? mixCol(z.warna, z.tint, 0.55) : z.warna; return z._col; }
+  // Sprite animasi 8 bingkai bagi 11 hero. Imej potret kekal sebagai bingkai sedia/standby.
+  const HERO_ANIM_FILES = {
+    ninja: 'hero-01-ninja-amir', askar: 'hero-02-sarjan-rahim', saintis: 'hero-03-dr-lina',
+    jurutera: 'hero-04-jurutera-wei', ratu_ais: 'hero-05-ratu-salju', pahlawan: 'hero-06-hang-kilat',
+    komander: 'hero-07-komander-zara', pistol: 'hero-08-pak-usu', budak: 'hero-09-budak-lastik',
+    shotgun: 'hero-10-kak-long', mesingan: 'hero-11-abang-jo'
+  };
+  const HERO_ANIMS = {};
+  if (typeof Image !== 'undefined') Object.entries(HERO_ANIM_FILES).forEach(([id, base]) => {
+    HERO_ANIMS[id] = {};
+    const idle = new Image(); idle.src = 'heroes/' + base + '.png'; HERO_ANIMS[id].idle = idle;
+    ['attack', 'walk', 'ultimate'].forEach(state => { const img = new Image(); img.src = 'heroes/' + base + '-' + state + '.png'; HERO_ANIMS[id][state] = img; });
+  });
+  function drawBattleHero(m, y, sc, phase, runK, b, sv) {
+    const id = m.id, sheets = HERO_ANIMS[id];
+    const ultimate = b.fx && b.fx.find(f => f.kind === 'ult' && f.h === id && f.t < f.life);
+    const state = ultimate ? 'ultimate' : runK > 0.04 ? 'walk' : m.recoil > 0 ? 'attack' : 'idle';
+    const img = sheets && (state ? sheets[state] : null);
+    if (!img || !img.complete || !img.naturalWidth) {
+      drawHero(ctx, m.x, y, id, m.aim, m.recoil, sc, heroWeapon(sv, id), { t: ANIM, phase, mood: b.state === 'main' ? 'main' : b.state, gear: gearOf(sv, id), skin: heroSkin(sv, id), hurt: m.hurtT > 0 ? m.hurtT : 0, rage: !!b.act.amuk, spin: (m.shots || 0) * 0.9 + ANIM * (m.recoil > 0 ? 20 : 2) });
+      return;
+    }
+    const frame = state === 'idle' ? 0 : ultimate ? Math.min(7, Math.floor(ultimate.t / Math.max(0.01, ultimate.life) * 8)) :
+      state === 'attack' ? Math.min(7, Math.floor((1 - m.recoil / 0.1) * 8)) :
+      Math.floor(ANIM * (state === 'walk' ? 10 : 3) + phase) % 8;
+    const size = 58 * sc;
+    ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, frame * 128, 0, 128, 128, m.x - size / 2, y - size + 20 * sc, size, size);
+    if (m.hurtT > 0) { ctx.globalCompositeOperation = 'source-atop'; ctx.fillStyle = 'rgba(229,72,77,.35)'; ctx.fillRect(m.x - size / 2, y - size + 20 * sc, size, size); }
+    ctx.restore();
+  }
   function drawZombie(z) {
     if (z.fly) { drawFlyZ(z); return; }
     if (z.hop > 0 && z._jd == null) z._jd = Math.max(0, Math.min(90, z.y - (z._py == null ? z.y : z._py))); else if (!(z.hop > 0)) z._jd = null;
@@ -4202,7 +4254,7 @@ function fmtNum(n) {
     for (const bl of b.bullets) drawBullet(bl);
     drawBossProj(b);
     const mood = b.state === 'main' ? 'main' : b.state;
-    b.team.forEach((m, i) => { if (m.hurtT > 0) m.hurtT -= 1 / 60; }); const runK = running && !hideHud && b.clock < 0.9 && b.wave <= 1 && !LOWFX ? Math.pow(1 - b.clock / 0.9, 2) : 0; b.team.forEach((m, i) => drawHero(ctx, m.x, m.y - 4 + runK * (80 + i * 6) - (runK ? Math.abs(Math.sin(ANIM * 14 + i)) * 4 : 0), m.id, m.aim, m.recoil, b.team.length > 5 ? 1.2 : 1.32, heroWeapon(sv, m.id), { t: ANIM, phase: i * 1.7, mood, gear: gearOf(sv, m.id), skin: heroSkin(sv, m.id), hurt: m.hurtT > 0 ? m.hurtT : 0, rage: !!b.act.amuk, spin: (m.shots || 0) * 0.9 + ANIM * (m.recoil > 0 ? 20 : 2) }));
+    b.team.forEach((m, i) => { if (m.hurtT > 0) m.hurtT -= 1 / 60; }); const runK = running && !hideHud && b.clock < 0.9 && b.wave <= 1 && !LOWFX ? Math.pow(1 - b.clock / 0.9, 2) : 0; b.team.forEach((m, i) => drawBattleHero(m, m.y - 4 + runK * (80 + i * 6) - (runK ? Math.abs(Math.sin(ANIM * 14 + i)) * 4 : 0), b.team.length > 5 ? 1.2 : 1.32, i * 1.7, runK, b, sv));
     drawBossOver(b);
     drawPowersOver(b);
     drawParts();
@@ -5084,6 +5136,7 @@ function fmtNum(n) {
   const heroCards = {};
   function afterChange(msg, ok) { sfx(ok ? (/★|bintang|menyertai|Trofi|trofi|dituntut/.test(msg) ? 'star' : /Misi|Hari|Bonus/.test(msg) ? 'coin' : 'up') : 'bad'); toast(msg, ok); if (ok) { persist(); battle.syncTeam(); portraitSig = {}; } refreshAll(); }
   function buildHeroes() {
+    initHeroFilters();
     const box = $('heroList'); box.innerHTML = '';
     HERO_ORDER.forEach(id => {
       const d = HEROES[id], el = document.createElement('div'); el.className = 'card hero';
@@ -5118,12 +5171,60 @@ function fmtNum(n) {
     return parts.length ? parts.join(' · ') : '<span class="muted">Tiada item dipasang</span>';
   }
   let portraitSig = {};
+  const HERO_ART = {
+    ninja: 'hero-01-ninja-amir.png', askar: 'hero-02-sarjan-rahim.png',
+    saintis: 'hero-03-dr-lina.png', jurutera: 'hero-04-jurutera-wei.png',
+    ratu_ais: 'hero-05-ratu-salju.png', pahlawan: 'hero-06-hang-kilat.png',
+    komander: 'hero-07-komander-zara.png', pistol: 'hero-08-pak-usu.png',
+    budak: 'hero-09-budak-lastik.png', shotgun: 'hero-10-kak-long.png',
+    mesingan: 'hero-11-abang-jo.png'
+  };
+  const heroArtImages = {};
+  if (typeof Image !== 'undefined') Object.entries(HERO_ART).forEach(([id, file]) => {
+    const img = new Image();
+    img.onload = () => { portraitSig[id] = ''; if (heroCards[id]) paintPortrait(id); };
+    img.src = 'heroes/' + file;
+    heroArtImages[id] = img;
+  });
+  let heroFilter = 'semua', heroQuery = '';
+  function applyHeroFilters() {
+    const q = heroQuery.trim().toLocaleLowerCase();
+    let shown = 0;
+    HERO_ORDER.forEach(id => {
+      const el = heroCards[id]; if (!el) return;
+      const owned = !!save.heroes[id], inTeam = save.team.includes(id);
+      const statusOK = heroFilter === 'pasukan' ? inTeam :
+        heroFilter === 'milik' ? owned && !inTeam :
+        heroFilter === 'belum' ? !owned : true;
+      el.hidden = !(statusOK && (!q || (HEROES[id].nama + ' ' + id + ' ' + el.textContent).toLocaleLowerCase().includes(q)));
+      if (!el.hidden) shown++;
+    });
+    const count = $('heroResult'); if (count) count.textContent = shown + ' / ' + HERO_ORDER.length + ' hero';
+  }
+  function initHeroFilters() {
+    const search = $('heroSearch'), filters = $('heroFilters');
+    if (!search || search._ready) return;
+    search._ready = true;
+    search.addEventListener('input', () => { heroQuery = search.value; applyHeroFilters(); });
+    filters.addEventListener('click', e => {
+      const b = e.target.closest('[data-hero-filter]'); if (!b) return;
+      heroFilter = b.dataset.heroFilter;
+      filters.querySelectorAll('[data-hero-filter]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      applyHeroFilters();
+    });
+  }
   function paintPortrait(id) {
     const wid = heroWeapon(save, id), key = wid + (save.heroes[id] ? 1 : 0) + gearSig(save, id);
     if (portraitSig[id] === key) return; portraitSig[id] = key;
     const cvs = heroCards[id].querySelector('canvas'), c = cvs.getContext('2d');
     paintIcon(heroCards[id].querySelector('.mini'), cc => weaponIcon(cc, wid), 30);
-    c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, 112, 112); c.scale(2, 2); drawHero(c, 28, 31, id, -Math.PI / 4, 0, 0.92, wid, { t: 0.5, phase: 0, mood: 'main', gear: gearOf(save, id), skin: heroSkin(save, id) });
+    c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, 112, 112);
+    const art = heroArtImages[id];
+    if (art && art.complete && art.naturalWidth) {
+      c.imageSmoothingEnabled = false; c.drawImage(art, 0, 0, 112, 112);
+    } else {
+      c.scale(2, 2); drawHero(c, 28, 31, id, -Math.PI / 4, 0, 0.92, wid, { t: 0.5, phase: 0, mood: 'main', gear: gearOf(save, id), skin: heroSkin(save, id) });
+    }
   }
   let wselSig = '';
   function refreshHeroes() {
@@ -5168,6 +5269,7 @@ function fmtNum(n) {
         up.hidden = true; x10.hidden = true; tm.hidden = true; el.querySelector('.more').hidden = false;
       }
     });
+    applyHeroFilters();
   }
 
   // ---------- tab SENJATA ----------
