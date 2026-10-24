@@ -582,9 +582,11 @@ function grantGeneratedHeroes(save) {
   if (save.heroPackV >= 1) return;
   GENERATED_HEROES.forEach(id => {
     if (!save.heroes[id]) save.heroes[id] = 1;
-    const wid = HEROES[id].wpn;
-    if (!save.weapons[wid]) save.weapons[wid] = 1;
-    if (!save.heroWpn[id]) save.heroWpn[id] = wid;
+    if (HEROES[id].tier === 0) {
+      const wid = HEROES[id].wpn;
+      if (!save.weapons[wid]) save.weapons[wid] = 1;
+      if (!save.heroWpn[id]) save.heroWpn[id] = wid;
+    }
   });
   save.heroPackV = 1;
 }
