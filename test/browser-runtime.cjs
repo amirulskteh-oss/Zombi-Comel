@@ -31,6 +31,10 @@ const server = http.createServer((req, res) => {
     const consoleErrors = [];
     page.on('pageerror', e => pageErrors.push(e.message));
     page.on('console', m => { if (m.type() === 'error') consoleErrors.push(m.text()); });
+    const failedResponses = [];
+    page.on('response', r => {
+      if (r.status() >= 400 && !/favicon\\.ico$/i.test(new URL(r.url()).pathname)) failedResponses.push({ status: r.status(), url: r.url() });
+    });
     const response = await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle', timeout: 30000 });
     assert.equal(response.status(), 200, 'halaman utama mesti HTTP 200');
     assert.match(await page.title(), /Zombi Comel/i, 'tajuk halaman mesti betul');
@@ -43,6 +47,7 @@ const server = http.createServer((req, res) => {
     await page.waitForTimeout(1200);
     assert.deepEqual(pageErrors, [], 'tiada pengecualian JavaScript semasa startup');
     assert.deepEqual(consoleErrors.filter(x => !/favicon\.ico.*404/i.test(x)), [], 'tiada ralat console semasa startup');
+    assert.deepEqual(failedResponses, [], 'semua aset dan permintaan halaman mesti berjaya dimuat');
     const layout = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, page: document.documentElement.scrollWidth, body: document.body.scrollWidth }));
     assert.ok(layout.page <= layout.viewport + 1, `halaman tidak boleh melimpah mendatar: ${JSON.stringify(layout)}`);
     const manifest = await page.evaluate(async () => {
@@ -55,6 +60,7 @@ const server = http.createServer((req, res) => {
     console.log('✓ Chromium sebenar: halaman utama HTTP 200');
     console.log('✓ canvas dirender: ' + JSON.stringify(dimensions));
     console.log('✓ tiada pengecualian JavaScript atau ralat console startup');
+    console.log('✓ semua permintaan aset berjaya dimuat');
     console.log('✓ susun atur mudah alih tanpa limpahan mendatar: ' + JSON.stringify(layout));
     console.log('✓ manifest PWA boleh dimuat dan sah');
     console.log('Ujian runtime Chromium lulus');
