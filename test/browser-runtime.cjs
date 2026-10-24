@@ -11,7 +11,7 @@ const server = http.createServer((req, res) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname); } catch { res.writeHead(400).end(); return; }
   const target = path.resolve(root, '.' + pathname);
-  if (!target.startsWith(root + path.sep) && target !== path.join(root, 'index.html')) { res.writeHead(403).end(); return; }
+  if (target !== root && !target.startsWith(root + path.sep)) { res.writeHead(403).end(); return; }
   let file = target;
   try { if (fs.statSync(file).isDirectory()) file = path.join(file, 'index.html'); } catch {}
   fs.readFile(file, (err, data) => {
