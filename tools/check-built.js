@@ -15,3 +15,22 @@ console.log('✓ tiada confirm()/alert() browser');
 console.log('✓ sintaks fail gabungan OK (' + Math.round(js.length / 1024) + ' KB)');
 console.log('  ↳ ' + rel.join('/'));
 }
+
+// Semak metadata PWA yang dipaparkan sepadan dengan sumber dan versi permainan.
+const root = path.join(__dirname, '..');
+const logic = fs.readFileSync(path.join(root, 'src', 'logic.js'), 'utf8');
+const version = (logic.match(/const VERSION = '([^']+)'/) || [])[1];
+if (!version) { console.error('✗ versi permainan tidak ditemui'); process.exit(1); }
+const sourceManifest = JSON.parse(fs.readFileSync(path.join(root, 'public', 'manifest.webmanifest'), 'utf8'));
+const builtManifest = JSON.parse(fs.readFileSync(path.join(root, 'docs', 'manifest.webmanifest'), 'utf8'));
+if (sourceManifest.description !== builtManifest.description) {
+  console.error('✗ penerangan manifest sumber dan docs tidak sepadan'); process.exit(1);
+}
+if (!builtManifest.description.includes('232 senjata')) {
+  console.error('✗ penerangan manifest tidak menyatakan 232 senjata'); process.exit(1);
+}
+const sw = fs.readFileSync(path.join(root, 'docs', 'sw.js'), 'utf8');
+if (!sw.includes("const CACHE = 'zombi-comel-" + version + "'")) {
+  console.error('✗ versi cache service worker tidak sepadan dengan permainan (' + version + ')'); process.exit(1);
+}
+console.log('✓ metadata PWA dan versi cache sepadan (' + version + ')');
