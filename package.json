@@ -1,6 +1,6 @@
 {
   "name": "zombi-comel",
-  "version": "8.5.0",
+  "version": "9.17.0",
   "description": "Game idle pertahanan zombie comel (HTML5, satu fail, boleh dipasang sebagai PWA)",
   "private": true,
   "scripts": {
