@@ -44,6 +44,23 @@ const server = http.createServer((req, res) => {
     const dimensions = await canvas.evaluate(c => ({ width: c.width, height: c.height, cssWidth: c.getBoundingClientRect().width, cssHeight: c.getBoundingClientRect().height, hidden: c.getClientRects().length === 0 }));
     assert.ok(dimensions.width >= 360 && dimensions.height >= 600, 'kanvas mesti mempunyai resolusi sebenar');
     assert.ok(dimensions.cssWidth >= 0 && dimensions.cssHeight >= 0, 'dimensi CSS kanvas boleh dibaca');
+    // Interaksi UI sebenar: mulakan stage melalui butang overlay, kemudian jeda dan sambung.
+    const overlay = page.locator('#overlay');
+    const overlayStart = overlay.getByRole('button', { name: 'Mula', exact: true });
+    if (await overlay.isVisible() && await overlayStart.count()) {
+      await overlayStart.first().click();
+      await assert.doesNotReject(async () => await page.waitForFunction(() => document.querySelector('#overlay')?.hidden === true, null, { timeout: 5000 }));
+      const play = page.locator('#btnPlay');
+      await play.waitFor({ state: 'visible', timeout: 5000 });
+      await page.waitForFunction(() => document.querySelector('#btnPlay')?.textContent.trim() === 'Jeda', null, { timeout: 5000 });
+      await play.click();
+      await page.waitForFunction(() => document.querySelector('#btnPlay')?.textContent.trim() === 'Mula', null, { timeout: 5000 });
+      await play.click();
+      await page.waitForFunction(() => document.querySelector('#btnPlay')?.textContent.trim() === 'Jeda', null, { timeout: 5000 });
+      console.log('✓ interaksi UI: mula stage, jeda, sambung');
+    } else {
+      throw new Error('Overlay permulaan atau butang Mula tidak ditemui; aliran mula permainan tidak dapat diuji');
+    }
     await page.waitForTimeout(1200);
     assert.deepEqual(pageErrors, [], 'tiada pengecualian JavaScript semasa startup');
     assert.deepEqual(consoleErrors.filter(x => !/favicon\.ico.*404/i.test(x)), [], 'tiada ralat console semasa startup');
