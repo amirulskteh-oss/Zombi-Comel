@@ -19,7 +19,7 @@
     const ultimate = b.fx && b.fx.find(f => f.kind === 'ult' && f.h === id && f.t < f.life);
     const state = ultimate ? 'ultimate' : runK > 0.04 ? 'walk' : m.recoil > 0 ? 'attack' : 'idle';
     const img = sheets && (state ? sheets[state] : null);
-    if (heroWeapon(sv, id) !== HEROES[id].wpn || !img || !img.complete || !img.naturalWidth) {
+    if (!img || !img.complete || !img.naturalWidth) {
       drawHero(ctx, m.x, y, id, m.aim, m.recoil, sc, heroWeapon(sv, id), { t: ANIM, phase, mood: b.state === 'main' ? 'main' : b.state, gear: gearOf(sv, id), skin: heroSkin(sv, id), hurt: m.hurtT > 0 ? m.hurtT : 0, rage: !!b.act.amuk, spin: (m.shots || 0) * 0.9 + ANIM * (m.recoil > 0 ? 20 : 2) });
       return;
     }

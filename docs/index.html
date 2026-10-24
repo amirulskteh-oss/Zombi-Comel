@@ -724,7 +724,7 @@ body[data-mode="hard"] .scard.cur{border-color:#F2B43A}body[data-mode="ngeri"] .
 <div class="toast" id="toast" role="status"></div>
 <script>
 // ================= LOGIK GAME v3 (tulen, tiada DOM) =================
-const VERSION = '9.18';
+const VERSION = '9.19';
 const SAVE_KEY = 'zombi_comel_save_v1';
 const W = 360, H = 600, WALL_Y = 488, WAVES_PER_STAGE = 10, OFFLINE_CAP = 28800, ZCAP = 70, SAVE_V = 7, INV_CAP = 200, MAX_SLOTS = 6, WALL_SLOTS = 3;
 
@@ -3833,7 +3833,7 @@ function fmtNum(n) {
     const ultimate = b.fx && b.fx.find(f => f.kind === 'ult' && f.h === id && f.t < f.life);
     const state = ultimate ? 'ultimate' : runK > 0.04 ? 'walk' : m.recoil > 0 ? 'attack' : 'idle';
     const img = sheets && (state ? sheets[state] : null);
-    if (heroWeapon(sv, id) !== HEROES[id].wpn || !img || !img.complete || !img.naturalWidth) {
+    if (!img || !img.complete || !img.naturalWidth) {
       drawHero(ctx, m.x, y, id, m.aim, m.recoil, sc, heroWeapon(sv, id), { t: ANIM, phase, mood: b.state === 'main' ? 'main' : b.state, gear: gearOf(sv, id), skin: heroSkin(sv, id), hurt: m.hurtT > 0 ? m.hurtT : 0, rage: !!b.act.amuk, spin: (m.shots || 0) * 0.9 + ANIM * (m.recoil > 0 ? 20 : 2) });
       return;
     }
