@@ -528,6 +528,7 @@ function claimEventChest(save, now, rng) {
 function encodeSave(save) { const j = JSON.stringify(save); return 'ZC5:' + btoa(unescape(encodeURIComponent(j))); }
 function decodeSave(code, now) {
   code = String(code || '').trim(); if (!code.startsWith('ZC5:')) throw new Error('Kod save tidak sah (mesti bermula dengan ZC5:)');
+  if (code.length > 2 * 1024 * 1024) throw new Error('Kod save terlalu besar');
   let o; try { o = JSON.parse(decodeURIComponent(escape(atob(code.slice(4))))); } catch (e) { throw new Error('Kod save rosak atau tidak lengkap'); }
   if (!o || typeof o !== 'object' || !o.heroes) throw new Error('Kod save tidak mengandungi data game');
   return migrate(o, now);
