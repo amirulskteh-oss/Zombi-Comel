@@ -12,3 +12,9 @@ jobs:
         with:
           node-version: 20
       - run: npm test
+      - name: Pasang Chromium untuk ujian runtime
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+      - name: Uji runtime dalam Chromium
+        run: node test/browser-runtime.cjs
