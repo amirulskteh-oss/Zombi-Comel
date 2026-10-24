@@ -1,5 +1,5 @@
 // ================= LOGIK GAME v3 (tulen, tiada DOM) =================
-const VERSION = '9.17';
+const VERSION = '9.18';
 const SAVE_KEY = 'zombi_comel_save_v1';
 const W = 360, H = 600, WALL_Y = 488, WAVES_PER_STAGE = 10, OFFLINE_CAP = 28800, ZCAP = 70, SAVE_V = 7, INV_CAP = 200, MAX_SLOTS = 6, WALL_SLOTS = 3;
 
@@ -576,6 +576,13 @@ const HEROES = {
   komander: { nama: 'Komander Zara', tier: 9, wpn: 'railgun',  baju: '#1E2A44', topi: '#C8302A', kulit: '#E0A878', gaya: 'beret',    kisah: 'Ketua pasukan elit anti-zombie. Railgunnya menembusi apa sahaja di laluannya.' }
 };
 const HERO_ORDER = Object.keys(HEROES);
+// 11 hero yang sudah direka khas tersedia terus dalam game; hero lain kekal ikut sistem shard biasa.
+const GENERATED_HEROES = ['ninja', 'askar', 'saintis', 'jurutera', 'ratu_ais', 'pahlawan', 'komander', 'pistol', 'budak', 'shotgun', 'mesingan'];
+function grantGeneratedHeroes(save) {
+  if (save.heroPackV >= 1) return;
+  GENERATED_HEROES.forEach(id => { if (!save.heroes[id]) save.heroes[id] = 1; });
+  save.heroPackV = 1;
+}
 const SLOT_COST = { 4: 50, 5: 150, 6: 400 };
 const HERO_CHESTS = {
   hero:    { nama: 'Peti Hero',         harga: 50,  shard: 10, minTier: 0, desc: '10 shard hero rawak' },
@@ -1310,7 +1317,7 @@ function cleanDaily(d) {
   return r;
 }
 function cleanMap(m, okKey, max) { const r = {}; if (m && typeof m === 'object') for (const k of Object.keys(m)) { const v = m[k]; if (okKey(k) && typeof v === 'number' && isFinite(v) && v > 0) r[k] = Math.min(max, Math.floor(v)); } return r; }
-function migrate(o, now) { const s = migrate0(o, now); if (s && s.heroes) { s.tapak = cleanTapak(o && o.tapak); s.tpb = cleanTpb(o && o.tpb); if (!s.kelasV) kelasMigrate(s, !!(o && typeof o === 'object' && o.heroes)); normalizeWeapons(s); } return s; }
+function migrate(o, now) { const s = migrate0(o, now); if (s && s.heroes) { s.tapak = cleanTapak(o && o.tapak); s.tpb = cleanTpb(o && o.tpb); if (!s.kelasV) kelasMigrate(s, !!(o && typeof o === 'object' && o.heroes)); grantGeneratedHeroes(s); normalizeWeapons(s); } return s; }
 // v9.4: hero tidak lagi membawa senjata — save lama: senjata asal hero yang dimiliki dipasang & kekal
 function kelasMigrate(s, old) {
   HERO_ORDER.forEach(h => { if (!s.heroes[h]) return; const sig = HEROES[h].wpn; if (old && !s.weapons[sig]) s.weapons[sig] = 1;
@@ -1355,7 +1362,7 @@ function migrate0(o, now) {
   const seen = new Set();
   const wallEquip = [0, 1, 2].map(i => { const u = Array.isArray(o.wallEquip) ? o.wallEquip[i] : null; if (uids.has(u) && jenisOf[u] === 'perisai' && !seen.has(u)) { seen.add(u); return u; } return null; });
   return {
-    kelasV: o.kelasV ? 1 : 0, kelasNotice: o.kelasNotice === true,
+    kelasV: o.kelasV ? 1 : 0, kelasNotice: o.kelasNotice === true, heroPackV: Math.max(0, Math.floor(num(o.heroPackV, 0))),
     v: SAVE_V, gold: num(o.gold, 0), gems: num(o.gems, 0), best, stage: Math.min(best, Math.max(1, Math.floor(num(o.stage, 1)))),
     cleared: Array.isArray(o.cleared) ? o.cleared.filter(n => typeof n === 'number') : [],
     heroes, team, slots, weapons, heroWpn, wallsOwned, wallActive, wallLv, wallEquip, shop, items, equip, boost,
