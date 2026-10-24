@@ -34,6 +34,10 @@ const server = http.createServer((req, res) => {
     const response = await page.goto('http://127.0.0.1:4173/', { waitUntil: 'networkidle', timeout: 30000 });
     assert.equal(response.status(), 200, 'halaman utama mesti HTTP 200');
     assert.match(await page.title(), /Zombi Comel/i, 'tajuk halaman mesti betul');
+    // Skrin mula memaparkan overlay dahulu; mulakan permainan melalui butang UI sebenar.
+    const start = page.locator('#hubStart');
+    await start.waitFor({ state: 'visible', timeout: 10000 });
+    await start.click();
     const canvas = page.locator('canvas#game');
     await canvas.waitFor({ state: 'visible', timeout: 10000 });
     const dimensions = await canvas.evaluate(c => ({ width: c.width, height: c.height, cssWidth: c.getBoundingClientRect().width, cssHeight: c.getBoundingClientRect().height }));
