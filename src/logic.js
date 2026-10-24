@@ -580,14 +580,7 @@ const HERO_ORDER = Object.keys(HEROES);
 const GENERATED_HEROES = ['ninja', 'askar', 'saintis', 'jurutera', 'ratu_ais', 'pahlawan', 'komander', 'pistol', 'budak', 'shotgun', 'mesingan'];
 function grantGeneratedHeroes(save) {
   if (save.heroPackV >= 1) return;
-  GENERATED_HEROES.forEach(id => {
-    if (!save.heroes[id]) save.heroes[id] = 1;
-    if (HEROES[id].tier === 0) {
-      const wid = HEROES[id].wpn;
-      if (!save.weapons[wid]) save.weapons[wid] = 1;
-      if (!save.heroWpn[id]) save.heroWpn[id] = wid;
-    }
-  });
+  GENERATED_HEROES.forEach(id => { if (!save.heroes[id]) save.heroes[id] = 1; });
   save.heroPackV = 1;
 }
 const SLOT_COST = { 4: 50, 5: 150, 6: 400 };

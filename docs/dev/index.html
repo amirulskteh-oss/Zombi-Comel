@@ -1314,14 +1314,7 @@ const HERO_ORDER = Object.keys(HEROES);
 const GENERATED_HEROES = ['ninja', 'askar', 'saintis', 'jurutera', 'ratu_ais', 'pahlawan', 'komander', 'pistol', 'budak', 'shotgun', 'mesingan'];
 function grantGeneratedHeroes(save) {
   if (save.heroPackV >= 1) return;
-  GENERATED_HEROES.forEach(id => {
-    if (!save.heroes[id]) save.heroes[id] = 1;
-    if (HEROES[id].tier === 0) {
-      const wid = HEROES[id].wpn;
-      if (!save.weapons[wid]) save.weapons[wid] = 1;
-      if (!save.heroWpn[id]) save.heroWpn[id] = wid;
-    }
-  });
+  GENERATED_HEROES.forEach(id => { if (!save.heroes[id]) save.heroes[id] = 1; });
   save.heroPackV = 1;
 }
 const SLOT_COST = { 4: 50, 5: 150, 6: 400 };
@@ -3849,7 +3842,7 @@ function fmtNum(n) {
     const ultimate = b.fx && b.fx.find(f => f.kind === 'ult' && f.h === id && f.t < f.life);
     const state = ultimate ? 'ultimate' : runK > 0.04 ? 'walk' : m.recoil > 0 ? 'attack' : 'idle';
     const img = sheets && (state ? sheets[state] : null);
-    if (!img || !img.complete || !img.naturalWidth) {
+    if (heroWeapon(sv, id) !== HEROES[id].wpn || !img || !img.complete || !img.naturalWidth) {
       drawHero(ctx, m.x, y, id, m.aim, m.recoil, sc, heroWeapon(sv, id), { t: ANIM, phase, mood: b.state === 'main' ? 'main' : b.state, gear: gearOf(sv, id), skin: heroSkin(sv, id), hurt: m.hurtT > 0 ? m.hurtT : 0, rage: !!b.act.amuk, spin: (m.shots || 0) * 0.9 + ANIM * (m.recoil > 0 ? 20 : 2) });
       return;
     }
