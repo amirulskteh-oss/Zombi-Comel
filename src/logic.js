@@ -1,5 +1,5 @@
 // ================= LOGIK GAME v3 (tulen, tiada DOM) =================
-const VERSION = '9.18';
+const VERSION = '9.19';
 const SAVE_KEY = 'zombi_comel_save_v1';
 const W = 360, H = 600, WALL_Y = 488, WAVES_PER_STAGE = 10, OFFLINE_CAP = 28800, ZCAP = 70, SAVE_V = 7, INV_CAP = 200, MAX_SLOTS = 6, WALL_SLOTS = 3;
 
