@@ -159,7 +159,7 @@
     mesingan: 'hero-11-abang-jo.png'
   };
   const heroArtImages = {};
-  Object.entries(HERO_ART).forEach(([id, file]) => {
+  if (typeof Image !== 'undefined') Object.entries(HERO_ART).forEach(([id, file]) => {
     const img = new Image();
     img.onload = () => { portraitSig[id] = ''; if (heroCards[id]) paintPortrait(id); };
     img.src = 'heroes/' + file;
