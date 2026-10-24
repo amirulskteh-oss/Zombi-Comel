@@ -53,6 +53,10 @@ const server = http.createServer((req, res) => {
     const continueButton = page.locator('#tContinue');
     await continueButton.waitFor({ state: 'visible', timeout: 10000 });
     await continueButton.click();
+    // Skrin tajuk menuju ke hub dahulu; butang hubStart membuka overlay stage.
+    const hubStart = page.locator('#hubStart');
+    await hubStart.waitFor({ state: 'visible', timeout: 10000 });
+    await hubStart.click();
     const overlay = page.locator('#overlay');
     await overlay.waitFor({ state: 'visible', timeout: 10000 });
     const overlayStart = overlay.getByRole('button', { name: 'Mula', exact: true });
@@ -66,7 +70,7 @@ const server = http.createServer((req, res) => {
     await page.waitForFunction(() => document.querySelector('#btnPlay')?.textContent.trim() === 'Mula', null, { timeout: 5000 });
     await play.click();
     await page.waitForFunction(() => document.querySelector('#btnPlay')?.textContent.trim() === 'Jeda', null, { timeout: 5000 });
-    console.log('✓ interaksi UI: skrin tajuk → mula stage → jeda → sambung');
+    console.log('✓ interaksi UI: skrin tajuk → hub → mula stage → jeda → sambung');
     await page.waitForTimeout(1200);
     assert.deepEqual(pageErrors, [], 'tiada pengecualian JavaScript semasa startup');
     assert.deepEqual(consoleErrors.filter(x => !/favicon\.ico.*404/i.test(x)), [], 'tiada ralat console semasa startup');
