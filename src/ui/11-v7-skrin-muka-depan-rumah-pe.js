@@ -120,7 +120,7 @@
     const c = cv.getContext('2d'), s = cv.width / 64; c.setTransform(s, 0, 0, s, 0, 0); c.clearRect(0, 0, 64, 64);
     const old = ctx; ctx = c; drawZombie({ id: 1, type: 'boss', x: 32, y: 38, r: 20, hp: 1, maxHp: 1, warna: '#8DC95B', traits: [], wob: 0.6, evo: 0, slowT: 0, burnT: 0, hitT: 0, atkAnim: 0, gear: 'tiada' }); ctx = old;
   }
-  function hasProgress() { return save.best > 1 || Object.keys(save.heroes).length > 1 || (save.stats.battles || 0) > 0; }
+  function hasProgress() { return save.best > 1 || save.tut >= 99 || Object.keys(save.heroes).some(h => !GENERATED_HEROES.includes(h)) || (save.stats.battles || 0) > 0; }
   function refreshTitle() { const p = hasProgress(), D = diffOf(save); $('tContinue').textContent = p ? '▶ Sambung · ' + (D.id === 'normal' ? '' : D.nama + ' ') + 'Stage ' + save.stage : '▶ Mula main'; $('tModes').innerHTML = modeGridHtml(); paintModeIcons($('tModes')); $('tNew').hidden = !p; $('tFoot').textContent = 'Dibina oleh Zuuussss · Versi ' + VERSION; }
   function makeDemo() {
     const ds = migrate(null, 0); ['pistol', 'shotgun', 'frost', 'bom'].forEach(h => { ds.heroes[h] = 40; ds.weapons[HEROES[h].wpn] = 1; });
