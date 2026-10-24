@@ -1331,6 +1331,9 @@ function migrate0(o, now) {
   let items = Array.isArray(o.items) ? o.items.filter(it => it && typeof it.uid === 'number' && (ITEM_NAMES[it.jenis] || it.jenis === 'aksesori') && typeof it.rar === 'number' && it.ilvl >= 1) : [];
   items = items.map(it => { if (it.jenis !== 'aksesori') return it; const m = AKS_MAP[Math.floor(num(it.base, 0)) % 6]; return Object.assign({}, it, { jenis: m[0], base: m[1] }); });
   items = items.map(it => ({ uid: it.uid, jenis: it.jenis, rar: Math.min(9, Math.max(0, Math.floor(ver < 3 ? (RMAP[it.rar] ?? 0) : it.rar))), ilvl: Math.floor(it.ilvl), base: Math.floor(num(it.base, 0)) % 6, lock: it.lock === true, sub: Array.isArray(it.sub) ? it.sub.filter(s => s && SUBSTATS[s.k] && s.q > 0 && s.q < 3).slice(0, 3).map(s => ({ k: s.k, q: +s.q })) : null })).map(it => { if (!it.sub) it.sub = rollSubs(it.jenis, it.rar, it.uid * 7919 + it.rar); return it; }).slice(0, INV_CAP);
+  // UID mesti unik: itemByUid mengambil padanan pertama, jadi migrasi juga perlu mengekalkan padanan pertama.
+  const seenUid = new Set();
+  items = items.filter(it => { if (seenUid.has(it.uid)) return false; seenUid.add(it.uid); return true; });
   const uids = new Set(items.map(i => i.uid)), jenisOf = {}; items.forEach(i => { jenisOf[i.uid] = i.jenis; });
   const equip = {};
   if (o.equip && typeof o.equip === 'object') for (const h of Object.keys(o.equip)) if (heroes[h]) { const e = o.equip[h] || {}; equip[h] = {}; HERO_SLOTS.concat(['aksesori']).forEach(s => { const u = e[s], j = jenisOf[u]; if (uids.has(u) && HERO_SLOTS.includes(j) && equip[h][j] == null && !Object.values(equip).some(q => Object.values(q).includes(u))) equip[h][j] = u; }); }
