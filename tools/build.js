@@ -57,11 +57,15 @@ fs.mkdirSync(path.join(OUT, FLAT ? '' : 'icons'), { recursive: true });
 fs.writeFileSync(path.join(OUT, 'index.html'), fix(html));
 if (!FLAT) { fs.mkdirSync(path.join(OUT, 'dev'), { recursive: true }); fs.writeFileSync(path.join(OUT, 'dev', 'index.html'), devHtml); }
 fs.writeFileSync(path.join(OUT, 'privasi.html'), fs.readFileSync(path.join(PUB, 'privasi.html'), 'utf8').replace(/\{\{VERSI\}\}/g, versi));
+fs.copyFileSync(path.join(PUB, 'hero-packs.html'), path.join(OUT, 'hero-packs.html'));
 fs.writeFileSync(path.join(OUT, 'sw.js'), fix(fs.readFileSync(path.join(PUB, 'sw.js'), 'utf8')).replace(/__VERSI__/g, versi));
 fs.writeFileSync(path.join(OUT, 'manifest.webmanifest'), fix(fs.readFileSync(path.join(PUB, 'manifest.webmanifest'), 'utf8')));
 for (const f of fs.readdirSync(path.join(PUB, 'icons'))) fs.copyFileSync(path.join(PUB, 'icons', f), path.join(OUT, FLAT ? '' : 'icons', f));
 const HERO_OUT = path.join(OUT, FLAT ? '' : 'heroes'); fs.mkdirSync(HERO_OUT, { recursive: true });
 for (const f of fs.readdirSync(path.join(PUB, 'heroes'))) fs.copyFileSync(path.join(PUB, 'heroes', f), path.join(HERO_OUT, f));
 if (!FLAT) { const DEV_HERO_OUT = path.join(OUT, 'dev', 'heroes'); fs.mkdirSync(DEV_HERO_OUT, { recursive: true }); for (const f of fs.readdirSync(path.join(PUB, 'heroes'))) fs.copyFileSync(path.join(PUB, 'heroes', f), path.join(DEV_HERO_OUT, f)); }
+const PACK_OUT = path.join(OUT, 'hero-packs'); fs.mkdirSync(PACK_OUT, { recursive: true });
+for (const f of fs.readdirSync(path.join(PUB, 'hero-packs'))) fs.copyFileSync(path.join(PUB, 'hero-packs', f), path.join(PACK_OUT, f));
+if (!FLAT) { fs.copyFileSync(path.join(PUB, 'hero-packs.html'), path.join(OUT, 'dev', 'hero-packs.html')); const DEV_PACK_OUT = path.join(OUT, 'dev', 'hero-packs'); fs.mkdirSync(DEV_PACK_OUT, { recursive: true }); for (const f of fs.readdirSync(path.join(PUB, 'hero-packs'))) fs.copyFileSync(path.join(PUB, 'hero-packs', f), path.join(DEV_PACK_OUT, f)); }
 if (!FLAT) fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
 console.log('✓ ' + path.basename(OUT) + '/ dibina — versi ' + versi + ', index.html ' + Math.round(html.length / 1024) + ' KB');
