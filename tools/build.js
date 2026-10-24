@@ -51,7 +51,7 @@ const devHtml = headDev.replace('<title>Zombi Comel', '<title>[DEV] Zombi Comel'
 if (process.argv.includes('--artifact')) { fs.writeFileSync(path.join(ROOT, 'zombi-comel.html'), headDev + logic + ui + '</script>\n</body>\n</html>\n'); }
 const html = toPlay(head + logic + ui + '</script>\n' + PWA_FOOT + '</body>\n</html>\n');
 
-const fix = s => FLAT ? s.replace(/icons\//g, '') : s;
+const fix = s => FLAT ? s.replace(/icons\//g, '').replace(/heroes\//g, '') : s;
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, FLAT ? '' : 'icons'), { recursive: true });
 fs.writeFileSync(path.join(OUT, 'index.html'), fix(html));
@@ -60,5 +60,8 @@ fs.writeFileSync(path.join(OUT, 'privasi.html'), fs.readFileSync(path.join(PUB, 
 fs.writeFileSync(path.join(OUT, 'sw.js'), fix(fs.readFileSync(path.join(PUB, 'sw.js'), 'utf8')).replace(/__VERSI__/g, versi));
 fs.writeFileSync(path.join(OUT, 'manifest.webmanifest'), fix(fs.readFileSync(path.join(PUB, 'manifest.webmanifest'), 'utf8')));
 for (const f of fs.readdirSync(path.join(PUB, 'icons'))) fs.copyFileSync(path.join(PUB, 'icons', f), path.join(OUT, FLAT ? '' : 'icons', f));
+const HERO_OUT = path.join(OUT, FLAT ? '' : 'heroes'); fs.mkdirSync(HERO_OUT, { recursive: true });
+for (const f of fs.readdirSync(path.join(PUB, 'heroes'))) fs.copyFileSync(path.join(PUB, 'heroes', f), path.join(HERO_OUT, f));
+if (!FLAT) { const DEV_HERO_OUT = path.join(OUT, 'dev', 'heroes'); fs.mkdirSync(DEV_HERO_OUT, { recursive: true }); for (const f of fs.readdirSync(path.join(PUB, 'heroes'))) fs.copyFileSync(path.join(PUB, 'heroes', f), path.join(DEV_HERO_OUT, f)); }
 if (!FLAT) fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
 console.log('✓ ' + path.basename(OUT) + '/ dibina — versi ' + versi + ', index.html ' + Math.round(html.length / 1024) + ' KB');

@@ -72,6 +72,14 @@ button:focus-visible{outline:3px solid var(--gem);outline-offset:2px}
 .ver{color:var(--soft);font-size:.8rem;margin-top:10px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin:-2px 0 8px}
 .chip{background:var(--gem);color:#fff;font:800 .78rem "Nunito";padding:2px 10px;border-radius:999px}
+.hero-tools{display:flex;align-items:center;gap:8px;margin:8px 0 6px}
+.hero-search{display:flex;align-items:center;gap:6px;min-width:0;flex:1;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:0 10px;color:var(--soft);font-size:1.2rem}
+.hero-search input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:700 .95rem "Nunito";padding:9px 0}
+.hero-result{flex:none;color:var(--soft);font-size:.8rem;font-weight:800}
+.hero-filters{margin-bottom:8px}
+.hero-filters button{font:800 .82rem "Nunito";padding:6px 9px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--soft);cursor:pointer}
+.hero-filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card.hero[hidden]{display:none!important}
 .card.hero{align-items:flex-start}
 .card.hero.inteam{border-color:var(--go)}
 .card .acts{display:flex;flex-direction:column;gap:6px;flex:none}
@@ -535,6 +543,16 @@ body[data-mode="hard"] .scard.cur{border-color:#F2B43A}body[data-mode="ngeri"] .
       <p class="muted" style="margin:0 0 6px">Tip: tekan hero di medan untuk lihat jarak senjata; seret hero ke hero lain untuk tukar kedudukan.</p>
       <div class="toolbar"><canvas id="slotIco" class="ico28" aria-hidden="true"></canvas><span class="grow" id="slotInfo"></span><button class="btn" id="btnSlot"></button></div>
       <div class="row2"><button class="btn big" id="upAll">⬆ Naik semua (gold)</button><button class="btn ghost" id="bestTeamBtn">✨ Susun terbaik</button></div>
+      <div class="hero-tools">
+        <label class="hero-search"><span aria-hidden="true">⌕</span><input id="heroSearch" type="search" placeholder="Cari nama hero…" autocomplete="off" aria-label="Cari hero"></label>
+        <span id="heroResult" class="hero-result" aria-live="polite">22 / 22 hero</span>
+      </div>
+      <div class="filters hero-filters" id="heroFilters" role="group" aria-label="Tapis koleksi hero">
+        <button type="button" data-hero-filter="semua" aria-pressed="true">Semua</button>
+        <button type="button" data-hero-filter="pasukan" aria-pressed="false">Pasukan</button>
+        <button type="button" data-hero-filter="milik" aria-pressed="false">Hero lain</button>
+        <button type="button" data-hero-filter="belum" aria-pressed="false">Belum dibina</button>
+      </div>
       <div id="heroGrid"><h3 class="sec" id="hgTeamH">Pasukan</h3><div class="hgrid" id="hgTeam"></div><h3 class="sec" id="hgOwnH">Hero lain</h3><div class="hgrid" id="hgOwn"></div><h3 class="sec" id="hgLockH">Belum dibina</h3><div class="hgrid" id="hgLock"></div></div>
       <div id="heroList"><button class="hbtn" id="heroClose" aria-label="Tutup">✕ Tutup</button></div>
     </section>

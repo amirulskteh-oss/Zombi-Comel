@@ -2,7 +2,7 @@
 // __VERSI__ diganti oleh tools/build.js setiap kali dibina, jadi versi baharu = cache baharu.
 const CACHE = 'zombi-comel-__VERSI__';
 const FONTS = 'zombi-comel-fonts';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png'];
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png', './heroes/hero-01-ninja-amir.png', './heroes/hero-02-sarjan-rahim.png', './heroes/hero-03-dr-lina.png', './heroes/hero-04-jurutera-wei.png', './heroes/hero-05-ratu-salju.png', './heroes/hero-06-hang-kilat.png', './heroes/hero-07-komander-zara.png', './heroes/hero-08-pak-usu.png', './heroes/hero-09-budak-lastik.png', './heroes/hero-10-kak-long.png', './heroes/hero-11-abang-jo.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
