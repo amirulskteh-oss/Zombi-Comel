@@ -46,17 +46,22 @@ const server = http.createServer((req, res) => {
     assert.ok(dimensions.cssWidth >= 0 && dimensions.cssHeight >= 0, 'dimensi CSS kanvas boleh dibaca');
     // Interaksi UI sebenar: lalui skrin tajuk, overlay stage, jeda dan sambung.
     const modal = page.locator('#modal');
-    if (await modal.count() && await modal.isVisible()) {
-      const modalButtons = modal.locator('#mBtns button:visible');
-      if (await modalButtons.count()) await modalButtons.last().click();
-    }
+    const dismissModalIfVisible = async () => {
+      if (await modal.count() && await modal.isVisible()) {
+        const firstModalButton = modal.locator('#mBtns button:visible').first();
+        if (await firstModalButton.count()) await firstModalButton.click();
+      }
+    };
     const continueButton = page.locator('#tContinue');
     await continueButton.waitFor({ state: 'visible', timeout: 10000 });
     await continueButton.click();
-    // Skrin tajuk menuju ke hub dahulu; butang hubStart membuka overlay stage.
+    await dismissModalIfVisible();
+    // Ikut aliran yang digunakan oleh smoke test permainan: skrin tajuk → hub.
     const hubStart = page.locator('#hubStart');
-    await hubStart.waitFor({ state: 'visible', timeout: 10000 });
-    await hubStart.click();
+    await hubStart.waitFor({ state: 'attached', timeout: 10000 });
+    await dismissModalIfVisible();
+    await hubStart.click({ timeout: 10000 });
+    await dismissModalIfVisible();
     const overlay = page.locator('#overlay');
     await overlay.waitFor({ state: 'visible', timeout: 10000 });
     const overlayStart = overlay.getByRole('button', { name: 'Mula', exact: true });
