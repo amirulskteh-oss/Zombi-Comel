@@ -7,7 +7,7 @@
     "build": "node tools/build.js",
     "build:telefon": "node tools/build.js --flat",
     "check": "node --check src/logic.js && node --check public/sw.js && node --check tools/build.js && node --check test/browser-runtime.cjs && node tools/build.js && node tools/check-built.js",
-    "test": "npm run check && node test/unit.test.js && node test/smoke-v3.test.js && node test/smoke-v4.test.js && node test/smoke-play.test.js && node test/smoke-billing.test.js",
+    "test": "npm run check && node test/unit.test.js && node test/smoke-v3.test.js && node test/smoke-v4.test.js && node test/smoke-play.test.js && node test/smoke-billing.test.js && node test/mobile-static.test.js",
     "balance": "node test/balance.js 120",
     "build:artifact": "node tools/build.js --artifact",
     "test:audio": "node test/audio.test.js"
