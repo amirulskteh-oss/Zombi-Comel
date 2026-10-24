@@ -2,7 +2,7 @@
 
 Game idle pertahanan zombie comel dalam **satu fail HTML** — boleh dimain di pelayar dan **dipasang di telefon** sebagai aplikasi (PWA), termasuk tanpa internet.
 
-**22 hero · 32 senjata · 1000 spesies zombie · 50 pagar · 9 kuasa · 195 trofi · 50 latar · 6 cabaran**
+**22 hero · 232 senjata (32 asal + 200 jana) · 1000 spesies zombie · 50 pagar · 9 kuasa · 195 trofi · 50 latar · 6 cabaran**
 
 ---
 
@@ -24,7 +24,7 @@ zombi-comel/
 │   ├── index.html
 │   ├── manifest.webmanifest, sw.js, icons/
 ├── test/
-│   ├── unit.test.js      ← 166 ujian logik
+│   ├── unit.test.js      ← 360+ ujian logik
 │   ├── smoke-v3.test.js  ← ujian UI asas
 │   ├── smoke-v4.test.js  ← ujian UI penuh
 │   └── balance.js        ← simulasi keseimbangan
