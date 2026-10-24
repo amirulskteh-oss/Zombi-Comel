@@ -75,6 +75,7 @@ t('auto kuasa tak guna bila lapang',()=>{const b=mkP();b.autoPower=true;b.update
 t('semua kuasa dalam pertempuran penuh tanpa ralat',()=>{const b=mkP(25);b.queue=waveComposition(25,9);b.autoPower=true;b.god=true;b.simulate(60);A.ok(['main','menang'].includes(b.state))});
 
 // ---------- v4: tier, shard, bintang ----------
+t('integriti statistik asas semua 22 hero',()=>{A.strictEqual(new Set(HERO_ORDER).size,HERO_ORDER.length);HERO_ORDER.forEach(h=>{const meta=HEROES[h];A.ok(meta&&typeof meta.nama==='string'&&meta.nama.length>0,h+' nama');const s=defaultSave(0);s.heroes[h]=1;s.weapons[meta.wpn]=1;s.heroWpn[h]=meta.wpn;const st=heroStats(s,h,0);for(const k of ['dmg','rate','crit','critMul','hp','goldPct'])A.ok(Number.isFinite(st[k]),h+' '+k+' mesti terhingga');A.ok(st.dmg>0&&st.rate>0&&st.hp>0,h+' statistik positif');});});
 t('22 hero, 10 tier, 10 hero baharu',()=>{A.strictEqual(HERO_ORDER.length,22);A.strictEqual(TIERS.length,10);A.strictEqual(TIERS[0].nama,'Basic');A.strictEqual(TIERS[9].nama,'UR');A.ok(HERO_ORDER.filter(h=>HEROES[h].tier===9).length>=2)});
 t('Basic perlu 25 shard, meningkat ikut tier',()=>{A.strictEqual(TIERS[0].bina,25);for(let i=1;i<10;i++)A.ok(TIERS[i].bina>TIERS[i-1].bina)});
 t('bina hero dengan shard',()=>{const s=defaultSave(0);addShards(s,'budak',24);A.strictEqual(unlockHero(s,'budak').ok,false);addShards(s,'budak',1);A.ok(unlockHero(s,'budak').ok);A.strictEqual(s.shards.budak,0);A.ok(s.weapons.lastik,'hadiah selamat datang hero Basic');A.strictEqual(heroWeapon(s,'budak'),'lastik');A.ok(s.team.includes('budak'))});
