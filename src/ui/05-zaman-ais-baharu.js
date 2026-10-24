@@ -115,6 +115,7 @@
   const heroCards = {};
   function afterChange(msg, ok) { sfx(ok ? (/★|bintang|menyertai|Trofi|trofi|dituntut/.test(msg) ? 'star' : /Misi|Hari|Bonus/.test(msg) ? 'coin' : 'up') : 'bad'); toast(msg, ok); if (ok) { persist(); battle.syncTeam(); portraitSig = {}; } refreshAll(); }
   function buildHeroes() {
+    initHeroFilters();
     const box = $('heroList'); box.innerHTML = '';
     HERO_ORDER.forEach(id => {
       const d = HEROES[id], el = document.createElement('div'); el.className = 'card hero';
@@ -149,12 +150,60 @@
     return parts.length ? parts.join(' · ') : '<span class="muted">Tiada item dipasang</span>';
   }
   let portraitSig = {};
+  const HERO_ART = {
+    ninja: 'hero-01-ninja-amir.png', askar: 'hero-02-sarjan-rahim.png',
+    saintis: 'hero-03-dr-lina.png', jurutera: 'hero-04-jurutera-wei.png',
+    ratu_ais: 'hero-05-ratu-salju.png', pahlawan: 'hero-06-hang-kilat.png',
+    komander: 'hero-07-komander-zara.png', pistol: 'hero-08-pak-usu.png',
+    budak: 'hero-09-budak-lastik.png', shotgun: 'hero-10-kak-long.png',
+    mesingan: 'hero-11-abang-jo.png'
+  };
+  const heroArtImages = {};
+  if (typeof Image !== 'undefined') Object.entries(HERO_ART).forEach(([id, file]) => {
+    const img = new Image();
+    img.onload = () => { portraitSig[id] = ''; if (heroCards[id]) paintPortrait(id); };
+    img.src = 'heroes/' + file;
+    heroArtImages[id] = img;
+  });
+  let heroFilter = 'semua', heroQuery = '';
+  function applyHeroFilters() {
+    const q = heroQuery.trim().toLocaleLowerCase();
+    let shown = 0;
+    HERO_ORDER.forEach(id => {
+      const el = heroCards[id]; if (!el) return;
+      const owned = !!save.heroes[id], inTeam = save.team.includes(id);
+      const statusOK = heroFilter === 'pasukan' ? inTeam :
+        heroFilter === 'milik' ? owned && !inTeam :
+        heroFilter === 'belum' ? !owned : true;
+      el.hidden = !(statusOK && (!q || (HEROES[id].nama + ' ' + id + ' ' + el.textContent).toLocaleLowerCase().includes(q)));
+      if (!el.hidden) shown++;
+    });
+    const count = $('heroResult'); if (count) count.textContent = shown + ' / ' + HERO_ORDER.length + ' hero';
+  }
+  function initHeroFilters() {
+    const search = $('heroSearch'), filters = $('heroFilters');
+    if (!search || search._ready) return;
+    search._ready = true;
+    search.addEventListener('input', () => { heroQuery = search.value; applyHeroFilters(); });
+    filters.addEventListener('click', e => {
+      const b = e.target.closest('[data-hero-filter]'); if (!b) return;
+      heroFilter = b.dataset.heroFilter;
+      filters.querySelectorAll('[data-hero-filter]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      applyHeroFilters();
+    });
+  }
   function paintPortrait(id) {
     const wid = heroWeapon(save, id), key = wid + (save.heroes[id] ? 1 : 0) + gearSig(save, id);
     if (portraitSig[id] === key) return; portraitSig[id] = key;
     const cvs = heroCards[id].querySelector('canvas'), c = cvs.getContext('2d');
     paintIcon(heroCards[id].querySelector('.mini'), cc => weaponIcon(cc, wid), 30);
-    c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, 112, 112); c.scale(2, 2); drawHero(c, 28, 31, id, -Math.PI / 4, 0, 0.92, wid, { t: 0.5, phase: 0, mood: 'main', gear: gearOf(save, id), skin: heroSkin(save, id) });
+    c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, 112, 112);
+    const art = heroArtImages[id];
+    if (art && art.complete && art.naturalWidth) {
+      c.imageSmoothingEnabled = false; c.drawImage(art, 0, 0, 112, 112);
+    } else {
+      c.scale(2, 2); drawHero(c, 28, 31, id, -Math.PI / 4, 0, 0.92, wid, { t: 0.5, phase: 0, mood: 'main', gear: gearOf(save, id), skin: heroSkin(save, id) });
+    }
   }
   let wselSig = '';
   function refreshHeroes() {
@@ -199,6 +248,7 @@
         up.hidden = true; x10.hidden = true; tm.hidden = true; el.querySelector('.more').hidden = false;
       }
     });
+    applyHeroFilters();
   }
 
   // ---------- tab SENJATA ----------

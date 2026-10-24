@@ -1,6 +1,36 @@
   // ---------- zombie dengan animasi berjalan, menyerang, terbakar, beku ----------
   function mixCol(a, b, k) { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), x = p(a), y = p(b); return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * k).toString(16).padStart(2, '0')).join(''); }
   function zCol(z) { if (z._col) return z._col; z._col = z.tint ? mixCol(z.warna, z.tint, 0.55) : z.warna; return z._col; }
+  // Sprite animasi 8 bingkai bagi 11 hero. Imej potret kekal sebagai bingkai sedia/standby.
+  const HERO_ANIM_FILES = {
+    ninja: 'hero-01-ninja-amir', askar: 'hero-02-sarjan-rahim', saintis: 'hero-03-dr-lina',
+    jurutera: 'hero-04-jurutera-wei', ratu_ais: 'hero-05-ratu-salju', pahlawan: 'hero-06-hang-kilat',
+    komander: 'hero-07-komander-zara', pistol: 'hero-08-pak-usu', budak: 'hero-09-budak-lastik',
+    shotgun: 'hero-10-kak-long', mesingan: 'hero-11-abang-jo'
+  };
+  const HERO_ANIMS = {};
+  if (typeof Image !== 'undefined') Object.entries(HERO_ANIM_FILES).forEach(([id, base]) => {
+    HERO_ANIMS[id] = {};
+    const idle = new Image(); idle.src = 'heroes/' + base + '.png'; HERO_ANIMS[id].idle = idle;
+    ['attack', 'walk', 'ultimate'].forEach(state => { const img = new Image(); img.src = 'heroes/' + base + '-' + state + '.png'; HERO_ANIMS[id][state] = img; });
+  });
+  function drawBattleHero(m, y, sc, phase, runK, b, sv) {
+    const id = m.id, sheets = HERO_ANIMS[id];
+    const ultimate = b.fx && b.fx.find(f => f.kind === 'ult' && f.h === id && f.t < f.life);
+    const state = ultimate ? 'ultimate' : runK > 0.04 ? 'walk' : m.recoil > 0 ? 'attack' : 'idle';
+    const img = sheets && (state ? sheets[state] : null);
+    if (!img || !img.complete || !img.naturalWidth) {
+      drawHero(ctx, m.x, y, id, m.aim, m.recoil, sc, heroWeapon(sv, id), { t: ANIM, phase, mood: b.state === 'main' ? 'main' : b.state, gear: gearOf(sv, id), skin: heroSkin(sv, id), hurt: m.hurtT > 0 ? m.hurtT : 0, rage: !!b.act.amuk, spin: (m.shots || 0) * 0.9 + ANIM * (m.recoil > 0 ? 20 : 2) });
+      return;
+    }
+    const frame = state === 'idle' ? 0 : ultimate ? Math.min(7, Math.floor(ultimate.t / Math.max(0.01, ultimate.life) * 8)) :
+      state === 'attack' ? Math.min(7, Math.floor((1 - m.recoil / 0.1) * 8)) :
+      Math.floor(ANIM * (state === 'walk' ? 10 : 3) + phase) % 8;
+    const size = 58 * sc;
+    ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, frame * 128, 0, 128, 128, m.x - size / 2, y - size + 20 * sc, size, size);
+    if (m.hurtT > 0) { ctx.globalCompositeOperation = 'source-atop'; ctx.fillStyle = 'rgba(229,72,77,.35)'; ctx.fillRect(m.x - size / 2, y - size + 20 * sc, size, size); }
+    ctx.restore();
+  }
   function drawZombie(z) {
     if (z.fly) { drawFlyZ(z); return; }
     if (z.hop > 0 && z._jd == null) z._jd = Math.max(0, Math.min(90, z.y - (z._py == null ? z.y : z._py))); else if (!(z.hop > 0)) z._jd = null;
@@ -409,7 +439,7 @@
     for (const bl of b.bullets) drawBullet(bl);
     drawBossProj(b);
     const mood = b.state === 'main' ? 'main' : b.state;
-    b.team.forEach((m, i) => { if (m.hurtT > 0) m.hurtT -= 1 / 60; }); const runK = running && !hideHud && b.clock < 0.9 && b.wave <= 1 && !LOWFX ? Math.pow(1 - b.clock / 0.9, 2) : 0; b.team.forEach((m, i) => drawHero(ctx, m.x, m.y - 4 + runK * (80 + i * 6) - (runK ? Math.abs(Math.sin(ANIM * 14 + i)) * 4 : 0), m.id, m.aim, m.recoil, b.team.length > 5 ? 1.2 : 1.32, heroWeapon(sv, m.id), { t: ANIM, phase: i * 1.7, mood, gear: gearOf(sv, m.id), skin: heroSkin(sv, m.id), hurt: m.hurtT > 0 ? m.hurtT : 0, rage: !!b.act.amuk, spin: (m.shots || 0) * 0.9 + ANIM * (m.recoil > 0 ? 20 : 2) }));
+    b.team.forEach((m, i) => { if (m.hurtT > 0) m.hurtT -= 1 / 60; }); const runK = running && !hideHud && b.clock < 0.9 && b.wave <= 1 && !LOWFX ? Math.pow(1 - b.clock / 0.9, 2) : 0; b.team.forEach((m, i) => drawBattleHero(m, m.y - 4 + runK * (80 + i * 6) - (runK ? Math.abs(Math.sin(ANIM * 14 + i)) * 4 : 0), b.team.length > 5 ? 1.2 : 1.32, i * 1.7, runK, b, sv));
     drawBossOver(b);
     drawPowersOver(b);
     drawParts();
