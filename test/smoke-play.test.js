@@ -34,7 +34,7 @@ els.navShop.click();els.kc_beli.click();step(15);A.strictEqual(els.iapList.child
 // 6) fail sokongan Play
 const fs2=require('fs'),P=require('path');const priv=fs2.readFileSync(P.join(__dirname,'..','docs','privasi.html'),'utf8');
 ['tidak mengumpul','does not collect','Kanak-kanak','Children','localStorage'].forEach(k=>A.ok(priv.includes(k),'privasi tiada: '+k));A.ok(!priv.includes('{{VERSI}}'));
-if(priv.includes('[EMEL ANDA DI SINI]'))console.log('⚠ privasi.html: isi e-mel anda sebelum dihantar ke Google Play');
+A.ok(!priv.includes('[EMEL ANDA DI SINI]'),'privasi BM masih ada placeholder e-mel');A.ok(!priv.includes('[YOUR EMAIL HERE]'),'privasi EN masih ada placeholder e-mel');A.ok(priv.includes('dadahpemusnah@gmail.com'),'e-mel hubungan tiada dalam polisi privasi');
 const man=JSON.parse(fs2.readFileSync(P.join(__dirname,'..','docs','manifest.webmanifest'),'utf8'));A.strictEqual(man.orientation,'portrait');A.ok(man.icons.some(i=>i.sizes==='512x512'&&i.purpose==='maskable'));
 const dev=fs2.readFileSync(P.join(__dirname,'..','docs','dev','index.html'),'utf8');A.ok(dev.includes('id="trainerBox"')&&dev.includes("zombi_comel_dev_save_v1")&&!dev.includes('rel="manifest"'));
 console.log('✓ privasi.html, manifest (potret, ikon maskable 512) & binaan dev/ berasingan');
